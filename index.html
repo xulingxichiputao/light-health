@@ -1,0 +1,2361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<!-- 移动端适配：禁止缩放 + 刘海屏安全区 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#F1FAFD" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<title>轻盈健康 · 湖蓝青</title>
+<style>
+/* ==========================================================================
+   1. 设计变量：通透湖蓝青（替换原本的绿色主色，整体提亮）
+   ========================================================================== */
+:root{
+  --bg:#F1FAFD;                                    /* 页面底色：冰湖白 */
+  --bg-2:#DCEBF3;                                  /* 桌面预览外部底色 */
+  --card:#FFFFFF;                                  /* 卡片底色 */
+  --ink:#10333F;                                   /* 主文字：深湖蓝 */
+  --ink-2:#3D6470;                                 /* 次要文字 */
+  --muted:#8AA7B1;                                 /* 辅助小字 */
+  --line:#E2EFF4;                                  /* 分隔线 */
+  --cyan:#2EB6CE;                                  /* 主色：湖蓝青 */
+  --cyan-d:#1585A3;                                /* 主色加深 */
+  --cyan-l:#7ED9EA;                                /* 浅湖蓝 */
+  --ice:#EAF9FD;                                   /* 浅冰底 */
+  --ice-2:#D6F1F9;                                 /* 冰底加深 */
+  --coral:#F5917A;                                 /* 点缀：珊瑚（少量） */
+  --amber:#F0B65C;                                 /* 点缀：暖金（少量） */
+  --violet:#9C9AE4;                                /* 点缀：香芋紫（少量） */
+  --grad:linear-gradient(135deg,#58D6E9 0%,#1C9CB8 100%);
+  --shadow:0 14px 30px rgba(24,110,132,.10), 0 3px 9px rgba(24,110,132,.06);
+  --shadow-sm:0 8px 18px rgba(24,110,132,.10);
+  --shadow-lift:0 24px 46px rgba(24,110,132,.20), 0 8px 16px rgba(24,110,132,.10);
+  --r-lg:26px;                                     /* 大圆角 */
+  --r-md:18px;
+  --r-sm:13px;
+}
+
+/* ==========================================================================
+   2. 基础重置
+   ========================================================================== */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;-webkit-text-size-adjust:100%}
+body{
+  font-family:"PingFang SC","HarmonyOS Sans SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);
+  background:radial-gradient(120% 90% at 12% 0%,#EBF8FD 0%,var(--bg-2) 62%,#D2E6F0 100%);
+  display:flex;justify-content:center;align-items:center;
+  overflow:hidden;-webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+input,select{font-family:inherit}
+b,strong{font-weight:800}
+svg.i{width:20px;height:20px;display:block;flex:0 0 auto}
+/* ==========================================================================
+   3. 手机外框（桌面预览为手机形状，真机自动全屏）
+   ========================================================================== */
+.phone{
+  position:relative;
+  width:min(430px,100vw);
+  height:min(900px,100vh);
+  height:min(900px,100dvh);
+  background:linear-gradient(178deg,#F7FDFF 0%,var(--bg) 42%,#E5F4F9 100%);
+  border-radius:42px;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 30px 70px rgba(20,86,104,.24);
+}
+/* 柔光装饰层：给页面加层次，不再是单薄平面 */
+.phone::before{
+  content:"";position:absolute;top:-130px;right:-100px;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(126,217,234,.70),rgba(126,217,234,0) 68%);
+  pointer-events:none;
+}
+.phone::after{
+  content:"";position:absolute;bottom:-130px;left:-90px;width:270px;height:270px;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,rgba(46,182,206,.20),rgba(46,182,206,0) 70%);
+  pointer-events:none;
+}
+@media (max-width:460px){ .phone{border-radius:0;box-shadow:none} }
+
+/* 顶部状态栏（模拟手机时间/信号，装饰用） */
+.statusbar{
+  position:relative;z-index:2;flex:0 0 auto;min-height:44px;
+  padding:calc(env(safe-area-inset-top) + 8px) 22px 2px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;font-weight:700;letter-spacing:.2px;
+}
+.statusbar .sb-right{display:flex;align-items:center;gap:7px;color:var(--ink-2)}
+.statusbar .sb-right .i{width:15px;height:15px}
+
+/* 可滚动主区域（底部 Tab 栏为独立层，不参与滚动） */
+.scroll{
+  position:relative;z-index:1;
+  flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+  padding:2px 16px 22px;
+  scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+}
+.scroll::-webkit-scrollbar{width:0;height:0}
+
+/* ==========================================================================
+   4. 顶部问候区
+   ========================================================================== */
+.greet{display:flex;align-items:center;gap:12px;padding:6px 0 16px}
+.avatar{
+  width:48px;height:48px;flex:0 0 48px;border-radius:16px;
+  display:grid;place-items:center;
+  color:#FFFFFF;font-size:17px;font-weight:800;
+  background:var(--grad);
+  box-shadow:0 10px 22px rgba(30,159,187,.32);
+}
+.greet-text{min-width:0}
+.greet-sub{margin:0 0 4px;font-size:12.5px;color:var(--muted);letter-spacing:.2px}
+.greet-main{
+  margin:0;font-size:19px;font-weight:800;letter-spacing:-.3px;
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.greet-main .chev{width:16px;height:16px;color:var(--muted)}
+.bell{
+  margin-left:auto;position:relative;flex:0 0 44px;
+  width:44px;height:44px;border-radius:16px;
+  background:var(--card);color:var(--ink-2);
+  display:grid;place-items:center;box-shadow:var(--shadow-sm);
+}
+.bell .i{width:21px;height:21px}
+.bell .dot{
+  position:absolute;top:9px;right:10px;width:9px;height:9px;border-radius:50%;
+  background:var(--coral);box-shadow:0 0 0 2px #fff;
+}
+
+.bell{transition:transform .18s cubic-bezier(.22,.9,.32,1.4)}
+.bell:active{transform:scale(.94)}
+.bell .i{width:20px;height:20px}
+/* ==========================================================================
+   5. 卡片基础：大卡（核心重点）/ 小卡（次要附属）
+   ========================================================================== */
+.card{
+  position:relative;background:var(--card);border-radius:var(--r-lg);
+  padding:16px;box-shadow:var(--shadow);border:1px solid rgba(226,239,244,.9);
+}
+.card-lg{padding:18px}                       /* 核心重点功能：大块卡片 */
+.card-sm{padding:14px;border-radius:22px}    /* 次要附属信息：小块卡片 */
+/* 卡片点击：轻微上浮 + 阴影放大凸显，松手回弹 */
+.tap{transition:transform .3s cubic-bezier(.22,.9,.32,1.28),box-shadow .3s ease}
+.tap:active{transform:translateY(-4px) scale(1.012);box-shadow:var(--shadow-lift)}
+@media (hover:hover) and (pointer:fine){
+  .tap:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+}
+/* 流式布局：同一行卡片底部齐平（等高），不会高低参差 */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
+.grid-2 > *{height:100%;display:flex;flex-direction:column;min-width:0}
+.push{margin-top:auto !important}
+
+/* 卡片头部：大图标 + 标题 */
+.card-head{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:.2px}
+.head-act{margin-left:auto;display:flex;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--cyan-d)}
+.head-act .i{width:14px;height:14px}
+.badge{
+  width:34px;height:34px;flex:0 0 34px;border-radius:12px;
+  display:grid;place-items:center;background:var(--ice);color:var(--cyan-d);
+}
+.badge .i{width:19px;height:19px}
+.badge.cyan{background:linear-gradient(135deg,#D9F3FA,#C0EAF6);color:#1287A6}
+.badge.teal{background:linear-gradient(135deg,#DCF6F4,#C3EDEF);color:#0F8D91}
+.badge.violet{background:linear-gradient(135deg,#EBEAFC,#DEDDF9);color:#6F6CC4}
+.badge.amber{background:linear-gradient(135deg,#FDF1DC,#FAE4BE);color:#B57F24}
+.badge.coral{background:linear-gradient(135deg,#FDE8E2,#FBD6CD);color:#C9664F}
+.badge.big{width:42px;height:42px;flex:0 0 42px;border-radius:15px}
+.badge.big .i{width:23px;height:23px}
+
+/* 核心数据数字：放大加粗 */
+.num{display:flex;align-items:baseline;gap:4px;line-height:1}
+.num b{font-size:30px;font-weight:800;letter-spacing:-1px}
+.num .unit{font-size:12px;font-weight:600;color:var(--muted)}
+/* 次要辅助文字：字号偏小 */
+.hint{margin:8px 0 0;font-size:11.5px;line-height:1.6;color:var(--muted);letter-spacing:.1px}
+.hint b{color:var(--ink-2)}
+
+/* 进度条 */
+.bar{height:8px;border-radius:99px;background:var(--ice-2);overflow:hidden;margin-top:12px}
+.bar > i{
+  display:block;height:100%;width:0;border-radius:99px;background:var(--grad);
+  transition:width .5s cubic-bezier(.22,.61,.36,1);
+}
+.bar.warm > i{background:linear-gradient(90deg,#FFCF87,#F5917A)}
+
+/* 环形进度（体重目标） */
+.ring-wrap{position:relative;flex:0 0 86px;width:86px;height:86px}
+.ring{width:86px;height:86px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring .ring-bg{stroke:var(--ice-2)}
+.ring .ring-fg{
+  stroke:#39BBD3;stroke-dasharray:207;stroke-dashoffset:207;
+  transition:stroke-dashoffset .7s cubic-bezier(.22,.61,.36,1);
+}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.ring-center b{font-size:16px;font-weight:800;letter-spacing:-.4px}
+.ring-center span{font-size:9.5px;color:var(--muted)}
+.weight-body{display:flex;align-items:center;gap:12px}
+.weight-info{min-width:0}
+.weight-info .v{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.weight-info .k{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+/* 网格小卡里的环形进度：整体收小一号，半宽卡片也放得下 */
+.grid-2 .ring-wrap{flex:0 0 72px;width:72px;height:72px}
+.grid-2 .ring{width:72px;height:72px}
+.grid-2 .ring-center b{font-size:14px}
+.grid-2 .ring-center span{font-size:9px}
+.grid-2 .weight-body{gap:9px}
+.grid-2 .weight-info .v{font-size:15px}
+.grid-2 .weight-info .k{font-size:10px;margin-top:4px}
+/* 数字 / 单位里的强调值 */
+.num .unit em,.num .unit b{font-style:normal;font-weight:800;color:var(--ink-2)}
+/* 隐藏原生文件选择框 */
+.visually-hidden{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0 0 0 0)}
+
+/* ==========================================================================
+   6. 大卡：饮水打卡（自定义饮水量 + 快捷按钮）
+   ========================================================================== */
+.hero-water{overflow:hidden}
+.hero-water::after{
+  content:"";position:absolute;top:-70px;right:-60px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,rgba(126,217,234,.40),rgba(126,217,234,0) 70%);
+  pointer-events:none;
+}
+.hero-top{display:flex;align-items:center;gap:14px;position:relative}
+.hero-info{min-width:0;flex:1}
+.hero-info .card-head{margin-bottom:8px}
+.water-add{display:flex;gap:9px;margin-top:14px;position:relative}
+.inp-wrap{
+  position:relative;flex:1;display:flex;align-items:center;border-radius:14px;
+  border:1.5px solid var(--line);background:#F8FCFE;
+  transition:border-color .22s ease,box-shadow .22s ease,background .22s ease;
+}
+.inp-wrap:focus-within{
+  border-color:var(--cyan);background:#FFFFFF;
+  box-shadow:0 0 0 4px rgba(46,182,206,.16),0 8px 18px rgba(46,182,206,.14);
+}
+.inp-wrap .inp{border:0;background:transparent;box-shadow:none;height:42px}
+.inp-wrap .suffix{flex:0 0 auto;padding-right:12px;font-size:11.5px;font-weight:800;color:var(--muted)}
+/* 输入框：点击激活时边框高亮 + 轻微发光 */
+.inp{
+  width:100%;min-width:0;height:44px;border-radius:14px;border:1.5px solid var(--line);
+  background:#F8FCFE;color:var(--ink);font-size:15px;font-weight:700;
+  padding:0 12px;outline:none;
+  transition:border-color .22s ease,box-shadow .22s ease,background .22s ease;
+}
+.inp::placeholder{color:#A9C2CB;font-weight:600;font-size:13px}
+.inp:focus{
+  border-color:var(--cyan);background:#FFFFFF;
+  box-shadow:0 0 0 4px rgba(46,182,206,.16),0 8px 18px rgba(46,182,206,.14);
+}
+select.inp{
+  appearance:none;-webkit-appearance:none;padding-right:34px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 19px,calc(100% - 13px) 19px;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+}
+textarea.inp{height:auto;min-height:78px;padding:11px 12px;line-height:1.6;font-size:13.5px;font-weight:600;resize:none}
+
+/* 按钮：按下缩小 + 柔和过渡 */
+.btn-lg{
+  flex:0 0 auto;height:44px;padding:0 20px;border-radius:14px;
+  background:var(--grad);color:#FFFFFF;font-size:13.5px;font-weight:800;letter-spacing:.3px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  box-shadow:0 10px 20px rgba(30,159,187,.28);
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),box-shadow .18s ease,filter .18s ease;
+}
+.btn-lg:active{transform:scale(.94);box-shadow:0 6px 14px rgba(30,159,187,.24);filter:brightness(1.03)}
+.btn-lg.wide{flex:1;width:100%}
+.btn-soft{
+  flex:0 0 auto;height:44px;padding:0 16px;border-radius:14px;
+  background:var(--ice);color:var(--cyan-d);font-size:13.5px;font-weight:800;
+  border:1px solid #CDEBF4;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),background .2s ease;
+}
+.btn-soft:active{transform:scale(.95);background:var(--ice-2)}
+.btn-lg .i,.btn-soft .i{width:17px;height:17px}
+/* 迷你按钮（快捷加水） */
+.mini-btns{display:flex;gap:8px;margin-top:10px}
+.mini{
+  flex:1;height:38px;border:1px solid var(--line);border-radius:13px;
+  background:#F8FCFE;color:var(--cyan-d);font-size:12.5px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:3px;
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),background .2s ease,border-color .2s ease;
+}
+.mini:active{transform:scale(.94);background:var(--ice);border-color:var(--cyan-l)}
+.mini .i{width:14px;height:14px}
+
+/* ==========================================================================
+   7. 模块小标题 & 底部说明
+   ========================================================================== */
+.section-title{margin:22px 2px 12px;font-size:16.5px;font-weight:800;letter-spacing:-.2px}
+.section-title small{margin-left:6px;font-size:11px;font-weight:600;color:var(--muted)}
+.foot-note{margin:22px 6px 8px;font-size:11px;line-height:1.7;color:#A6C0C9;text-align:center}
+
+/* ==========================================================================
+   8. 底部固定 Tab 导航栏（独立于滚动区域，滚动时不动）
+   ========================================================================== */
+.tabbar{
+  flex:0 0 auto;position:relative;z-index:30;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  padding:8px 6px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  box-shadow:0 -10px 26px rgba(24,110,132,.08);
+}
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:4px 0 2px;border-radius:16px;color:#A6C0C9;
+  transition:color .22s ease,transform .18s cubic-bezier(.22,.9,.32,1.4);
+}
+.tab:active{transform:scale(.94)}
+.tab .icon{
+  width:36px;height:28px;border-radius:13px;
+  display:grid;place-items:center;
+  transition:background .24s ease,transform .24s cubic-bezier(.22,.9,.32,1.4);
+}
+.tab .icon .i{width:22px;height:22px}
+.tab .txt{font-size:10.5px;font-weight:700;letter-spacing:.3px}
+.tab.is-active{color:var(--cyan-d)}
+.tab.is-active .icon{background:var(--ice);transform:translateY(-1px)}
+
+/* ==========================================================================
+   9. 面板切换 & 页面标题
+   ========================================================================== */
+.panel{display:none;animation:fadeUp .34s ease both}
+.panel.is-active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.page-title{margin:4px 2px 16px}
+.page-title h2{margin:0;font-size:21px;font-weight:800;letter-spacing:-.4px}
+.page-title p{margin:6px 0 0;font-size:11.5px;color:var(--muted)}
+
+/* ==========================================================================
+   10. 列表：饮食记录（支持左滑删除）
+   ========================================================================== */
+.list{display:flex;flex-direction:column;gap:10px}
+.swipe{
+  position:relative;border-radius:20px;overflow:hidden;
+  background:linear-gradient(135deg,#F5917A,#E8563C);
+  box-shadow:var(--shadow-sm);
+}
+.swipe .swipe-del{
+  position:absolute;top:0;right:0;bottom:0;width:88px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  color:#FFFFFF;font-size:11px;font-weight:800;
+}
+.swipe .swipe-del .i{width:19px;height:19px}
+.swipe .swipe-body{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:12px 14px;background:var(--card);
+  touch-action:pan-y;will-change:transform;
+}
+.swipe-body .txt-wrap{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.swipe-body .t{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.swipe-body .d{font-size:11px;color:var(--muted)}
+.swipe-body .v{font-size:14px;font-weight:800;letter-spacing:-.3px;color:var(--cyan-d);white-space:nowrap}
+.swipe.removing{opacity:0;transform:translateX(-46px) scale(.95);transition:opacity .22s ease,transform .22s ease}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:20px;padding:13px 15px;box-shadow:var(--shadow-sm)}
+.item .txt-wrap{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.item .t{font-size:13.5px;font-weight:700}
+.item .d{font-size:11px;color:var(--muted)}
+.item .v{font-size:14px;font-weight:800;letter-spacing:-.3px;color:var(--cyan-d)}
+.thumb{width:44px;height:44px;flex:0 0 44px;border-radius:14px;object-fit:cover;display:block;background:var(--ice)}
+.empty{padding:20px 4px;font-size:12px;line-height:1.7;color:#A6C0C9;text-align:center}
+
+/* 三餐自定义录入 */
+.meal-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.meal{
+  display:flex;align-items:center;gap:10px;padding:9px 11px;
+  border-radius:16px;background:var(--ice);border:1px solid #DDF1F7;
+}
+.meal-badge{
+  width:26px;height:26px;flex:0 0 26px;border-radius:9px;background:#FFFFFF;
+  display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--cyan-d);
+  box-shadow:0 2px 6px rgba(24,110,132,.08);
+}
+.meal-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.meal-main .n{font-size:13px;font-weight:700}
+.meal-main .s{font-size:10.5px;color:var(--muted)}
+.meal-kcal{
+  height:32px;padding:0 11px;border-radius:11px;background:#FFFFFF;
+  border:1px solid #DDF1F7;color:var(--cyan-d);font-size:12.5px;font-weight:800;
+  display:flex;align-items:center;gap:3px;
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),box-shadow .2s ease;
+}
+.meal-kcal:active{transform:scale(.94);box-shadow:0 4px 10px rgba(24,110,132,.14)}
+.photo-row{display:flex;gap:9px;margin-top:12px}
+.photo-row > button{flex:1;padding:0 8px}
+/* 按钮化的行：宽度撑满 + 文字左对齐（button 默认会居中） */
+.meal{width:100%;text-align:left}
+.meal-main{text-align:left}
+.meal-kcal{justify-content:center;white-space:nowrap}
+.task .txt-wrap,.swipe-body .txt-wrap{text-align:left}
+/* 左滑时不要选中文字 / 不要弹出系统菜单 */
+.swipe-body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+
+/* 快捷按钮 / 标签 */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{
+  min-height:38px;padding:0 14px;border-radius:13px;border:1px solid var(--line);background:#F8FCFE;
+  font-size:12.5px;font-weight:700;color:var(--ink-2);
+  display:flex;align-items:center;gap:5px;
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),background .2s ease,border-color .2s ease;
+}
+.chip:active{transform:scale(.95);background:var(--ice);border-color:var(--cyan-l)}
+.chip .i{width:15px;height:15px}
+.chip.primary{background:var(--ice);border-color:#CDEBF4;color:var(--cyan-d)}
+
+/* 图表页：近 7 天柱状图 */
+.bars{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;height:136px;margin-top:6px}
+.bars .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+.bars .track{width:100%;height:106px;border-radius:12px;background:var(--ice);display:flex;align-items:flex-end;overflow:hidden}
+.bars .fill{
+  width:100%;height:0;border-radius:12px;
+  background:linear-gradient(180deg,var(--cyan-l),var(--cyan));
+  transition:height .6s cubic-bezier(.22,.61,.36,1);
+}
+.bars .col.today .fill{background:linear-gradient(180deg,#FFCF87,#F5917A)}
+.bars .lb{font-size:10px;color:var(--muted)}
+.bars .col.today .lb{color:#C9664F;font-weight:800}
+.legend{display:flex;gap:14px;margin-top:14px;font-size:11px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+
+/* ==========================================================================
+   11. 每日计划：可勾选任务（可增删改）
+   ========================================================================== */
+.task{
+  display:flex;align-items:center;gap:12px;background:var(--card);
+  border-radius:20px;padding:12px 14px;box-shadow:var(--shadow-sm);
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),box-shadow .2s ease;
+}
+.task:active{transform:scale(.985)}
+.task .ck{
+  width:24px;height:24px;flex:0 0 24px;border-radius:9px;border:1.8px solid #CFE6ED;
+  display:grid;place-items:center;color:transparent;background:#F8FCFE;
+  transition:background .22s ease,border-color .22s ease,color .22s ease,transform .22s ease;
+}
+.task .ck .i{width:14px;height:14px}
+.task .txt-wrap{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.task .t{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task .d{font-size:11px;color:var(--muted)}
+.task.done .ck{background:var(--grad);border-color:transparent;color:#FFFFFF;transform:scale(1.03)}
+.task.done .t{color:#A6C0C9;text-decoration:line-through}
+.icon-mini{
+  width:34px;height:34px;flex:0 0 34px;border-radius:12px;
+  display:grid;place-items:center;background:#F8FCFE;color:var(--muted);
+  border:1px solid var(--line);
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),background .2s ease,color .2s ease;
+}
+.icon-mini:active{transform:scale(.9);background:var(--ice);color:var(--cyan-d)}
+.icon-mini .i{width:16px;height:16px}
+
+/* ==========================================================================
+   12. 我的页面：目标设置表单
+   ========================================================================== */
+.form-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.form-row:last-of-type{border-bottom:0}
+.form-row label{flex:0 0 auto;font-size:13px;font-weight:700;color:var(--ink-2)}
+.form-row .inp{width:118px;text-align:right;font-size:14px}
+.stat-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.stat-row:last-of-type{border-bottom:0}
+.stat-row .k{font-size:12px;color:var(--ink-2)}
+.stat-row .v{font-size:12.5px;font-weight:800;color:var(--cyan-d)}
+.btn-primary{
+  width:100%;height:48px;border-radius:16px;margin-top:16px;
+  background:var(--grad);color:#FFFFFF;font-size:14px;font-weight:800;letter-spacing:.4px;
+  box-shadow:0 12px 24px rgba(30,159,187,.28);
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),box-shadow .18s ease;
+}
+.btn-primary:active{transform:scale(.965);box-shadow:0 8px 16px rgba(30,159,187,.24)}
+.btn-ghost{
+  width:100%;height:46px;border:1px solid var(--line);border-radius:16px;margin-top:10px;
+  background:transparent;color:var(--muted);font-size:13px;font-weight:700;
+  transition:transform .18s ease,background .2s ease;
+}
+.btn-ghost:active{transform:scale(.97);background:rgba(226,239,244,.5)}
+/* ==========================================================================
+   13. 弹窗：淡入 + 轻微向上滑入，关闭时平滑淡出
+   ========================================================================== */
+.mask{
+  position:absolute;inset:0;z-index:40;background:rgba(16,60,74,.42);
+  opacity:0;visibility:hidden;
+  transition:opacity .3s ease,visibility .3s ease;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+}
+.mask.is-open{opacity:1;visibility:visible}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;z-index:41;
+  background:linear-gradient(180deg,#FFFFFF 0%,#F7FCFE 100%);
+  border-radius:30px 30px 0 0;
+  padding:10px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -16px 40px rgba(16,60,74,.20);
+  max-height:86%;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  opacity:0;transform:translateY(34px) scale(.985);
+  visibility:hidden;pointer-events:none;
+  transition:opacity .26s ease,transform .34s cubic-bezier(.16,1,.3,1),visibility .34s ease;
+}
+.sheet.is-open{opacity:1;transform:none;visibility:visible;pointer-events:auto}
+.sheet .grab{width:44px;height:4px;border-radius:99px;background:var(--ice-2);margin:0 auto 12px}
+.sheet-head{display:flex;align-items:center;gap:10px}
+.sheet h3{margin:0;font-size:17.5px;font-weight:800;letter-spacing:-.2px}
+.sheet-x{
+  margin-left:auto;width:32px;height:32px;flex:0 0 32px;border-radius:11px;display:grid;place-items:center;
+  background:var(--ice);color:var(--cyan-d);
+  transition:transform .18s cubic-bezier(.22,.9,.32,1.4),background .2s ease;
+}
+.sheet-x:active{transform:scale(.9);background:var(--ice-2)}
+.sheet-x .i{width:16px;height:16px}
+.sheet .desc{margin:8px 0 4px;font-size:11.5px;color:var(--muted);line-height:1.7}
+.field{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.field:last-of-type{border-bottom:0}
+.field .field-label{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.field .field-input{margin-left:auto;display:flex;align-items:center;gap:6px;width:56%}
+.field .field-input .inp{text-align:right}
+.field .field-input .unit{flex:0 0 auto;font-size:11.5px;font-weight:700;color:var(--muted)}
+.field-col{flex-direction:column;align-items:stretch;gap:8px}
+.field-col .field-input{width:100%;margin-left:0}
+.kv{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.kv:last-of-type{border-bottom:0}
+.kv .k{font-size:12.5px;color:var(--ink-2);font-weight:600}
+.kv .v{font-size:13.5px;font-weight:800;letter-spacing:-.3px}
+.sheet-foot{display:flex;gap:10px;margin-top:14px}
+.sheet-foot .btn-primary{margin-top:0;flex:1}
+.sheet-foot .btn-ghost{margin-top:0;flex:0 0 38%;width:auto;color:#D9634A;border-color:#FBD9D0}
+.qrow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.qrow .mini{flex:1 1 auto;min-width:64px;padding:0 10px;font-size:12px}
+/* 拍照识别时的进度动效 */
+.scan{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:11.5px;font-weight:800;color:var(--cyan-d)}
+.scan[hidden]{display:none}
+.scan .dotline{position:relative;flex:1;height:6px;border-radius:99px;background:var(--ice-2);overflow:hidden}
+.scan .dotline::after{
+  content:"";position:absolute;top:0;bottom:0;left:-40%;width:40%;border-radius:99px;
+  background:var(--grad);animation:scanMove 1.1s ease-in-out infinite;
+}
+@keyframes scanMove{0%{left:-40%}100%{left:100%}}
+.photo-preview{width:100%;height:150px;border-radius:18px;object-fit:cover;display:block;background:var(--ice);margin-top:10px}
+.toast{
+  position:absolute;left:50%;bottom:100px;z-index:60;
+  transform:translate(-50%,16px);
+  padding:11px 18px;border-radius:15px;
+  background:rgba(16,60,74,.92);color:#F2FCFE;
+  font-size:12.5px;font-weight:700;letter-spacing:.2px;
+  opacity:0;pointer-events:none;
+  transition:opacity .26s ease,transform .3s cubic-bezier(.16,1,.3,1);
+  white-space:nowrap;max-width:86%;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 12px 26px rgba(16,60,74,.24);
+}
+.toast.is-show{opacity:1;transform:translate(-50%,0)}
+
+/* ==========================================================================
+   14. 手机端适配 & 动效降级
+   ========================================================================== */
+@media (max-width:360px){
+  .num b{font-size:26px}
+  .badge{width:30px;height:30px;flex:0 0 30px}
+  .card{padding:14px}
+  .card-lg{padding:15px}
+  .field .field-input{width:50%}
+  .btn-lg{padding:0 14px;font-size:13px}
+  .grid-2{gap:10px}
+}
+@media (max-height:640px){
+  .ring-wrap,.ring{width:74px;height:74px;flex:0 0 74px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.06s !important}
+}
+</style>
+</head>
+<body>
+<!-- ===================== 内联 SVG 图标精灵（统一线条风格，低饱和） ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.2c3.3 3.7 5.6 6.5 5.6 9.3a5.6 5.6 0 1 1-11.2 0c0-2.8 2.3-5.6 5.6-9.3z"/>
+  </symbol>
+  <symbol id="ic-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 7.6l5.8 5.8 3.6-3.6 6.6 6.6"/>
+    <path d="M20 16.4h-4.6M20 16.4v-4.6"/>
+  </symbol>
+  <symbol id="ic-bowl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.2 11.4h15.6a7.8 7.8 0 0 1-15.6 0z"/>
+    <path d="M8.4 8.6c1.6-1.6 5.6-1.6 7.2 0"/>
+  </symbol>
+  <symbol id="ic-person" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4.4a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6z"/>
+    <path d="M4.8 20.4c0-3.9 3.2-6.6 7.2-6.6s7.2 2.7 7.2 6.6"/>
+  </symbol>
+  <symbol id="ic-dumbbell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.8 8.4v7.2M4.4 10.4v3.2M17.2 8.4v7.2M19.6 10.4v3.2M6.8 12h10.4"/>
+  </symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="3.6"/><circle cx="12" cy="12" r=".6"/>
+  </symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 10.6 12 4l8 6.6V19a1.6 1.6 0 0 1-1.6 1.6h-3.9v-6.1H9.5v6.1H5.6A1.6 1.6 0 0 1 4 19v-8.4z"/>
+  </symbol>
+  <symbol id="ic-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.2 3.6h9.6A1.8 1.8 0 0 1 18.6 5.4v13.2a1.8 1.8 0 0 1-1.8 1.8H7.2a1.8 1.8 0 0 1-1.8-1.8V5.4A1.8 1.8 0 0 1 7.2 3.6z"/>
+    <path d="M12 9v6M9 12h6"/>
+  </symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.6 19.6h16.8M6.4 19.2v-5.6M12 19.2V6.8M17.6 19.2v-8.8"/>
+  </symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.4 6.4h13.2A1.8 1.8 0 0 1 20.4 8.2v10.4a1.8 1.8 0 0 1-1.8 1.8H5.4a1.8 1.8 0 0 1-1.8-1.8V8.2A1.8 1.8 0 0 1 5.4 6.4z"/>
+    <path d="M8.2 3.6v4.6M15.8 3.6v4.6M3.6 11.2h16.8"/>
+  </symbol>
+  <symbol id="ic-chev-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.6 6.4 15.2 12l-5.6 5.6"/>
+  </symbol>
+  <symbol id="ic-chev-d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.4 9.6 12 15.2l5.6-5.6"/>
+  </symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.6a5.2 5.2 0 0 0-5.2 5.2v3.1L5.2 15h13.6l-1.6-3.1V8.8A5.2 5.2 0 0 0 12 3.6z"/>
+    <path d="M9.8 18.2a2.2 2.2 0 0 0 4.4 0"/>
+  </symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M12 6v12M6 12h12"/>
+  </symbol>
+  <symbol id="ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M6 12h12"/>
+  </symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.6 12.4l4 4 8.8-8.8"/>
+  </symbol>
+  <symbol id="ic-signal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M4 15v3M9 11.5v6.5M14 8v10M19 4.5v13.5"/>
+  </symbol>
+  <symbol id="ic-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <path d="M4.4 9.4a11 11 0 0 1 15.2 0M7.2 12.6a7 7 0 0 1 9.6 0M12 16.6h.01"/>
+  </symbol>
+  <symbol id="ic-battery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+    <rect x="3.2" y="8.2" width="16.4" height="7.6" rx="2"/>
+    <path d="M21.4 11.2v1.6"/>
+  </symbol>
+  <!-- 新增：可编辑功能所需图标 -->
+  <symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.6 8.6h2.5l1.4-2.2h7l1.4 2.2h2.5A1.6 1.6 0 0 1 21 10.2v7.2a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 17.4v-7.2a1.6 1.6 0 0 1 1.6-1.6z"/>
+    <circle cx="12" cy="13.6" r="3.1"/>
+  </symbol>
+  <symbol id="ic-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.4" y="5" width="17.2" height="14" rx="2.6"/>
+    <circle cx="8.8" cy="10" r="1.5"/>
+    <path d="M4.4 16.8l4.2-3.8 3.4 3 3-2.6 4.6 3.9"/>
+  </symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 7.6h14M9.6 7.6V5.4h4.8v2.2"/>
+    <path d="M6.6 7.6l.9 11.1a1.6 1.6 0 0 0 1.6 1.5h5.8a1.6 1.6 0 0 0 1.6-1.5l.9-11.1"/>
+    <path d="M10.4 11v5.6M13.6 11v5.6"/>
+  </symbol>
+  <symbol id="ic-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 19h3.3l9.6-9.6a1.8 1.8 0 0 0 0-2.5l-.7-.7a1.8 1.8 0 0 0-2.5 0L5 15.7V19z"/>
+    <path d="M14.3 6.8l2.9 2.9"/>
+  </symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+    <path d="M6.4 6.4l11.2 11.2M17.6 6.4L6.4 17.6"/>
+  </symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.2"/>
+    <path d="M12 7.6V12l3.1 1.9"/>
+  </symbol>
+  <symbol id="ic-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3.6c2.6 3.2 4.8 5.6 4.8 8.6a4.8 4.8 0 1 1-9.6 0c0-1.8.9-3.3 2.2-4.8.4 1.1.9 1.8 1.8 2.4-.5-2.4.2-4.4.8-6.2z"/>
+  </symbol>
+  <symbol id="ic-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.8" y="4.6" width="16.4" height="14.8" rx="3.4"/>
+    <path d="M8.6 13.4a4.8 4.8 0 1 0 6.8 0"/>
+    <path d="M12 10.2v3"/>
+  </symbol>
+  <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19.4 12a7.4 7.4 0 1 1-2.3-5.3"/>
+    <path d="M19.8 4.8v4.4h-4.4"/>
+  </symbol>
+</svg>
+<!-- ===================== 手机容器 ===================== -->
+<div class="phone" id="phone">
+
+  <!-- 状态栏（装饰） -->
+  <div class="statusbar">
+    <span id="sbTime">9:41</span>
+    <span class="sb-right">
+      <svg class="i" viewBox="0 0 24 24"><use href="#ic-signal"/></svg>
+      <svg class="i" viewBox="0 0 24 24"><use href="#ic-wifi"/></svg>
+      <svg class="i" viewBox="0 0 24 24"><use href="#ic-battery"/></svg>
+    </span>
+  </div>
+
+  <!-- 可滚动内容区（Tab 栏在它外面，所以滚动时不会跟着动） -->
+  <main class="scroll" id="scroll">
+
+    <!-- ===================== 面板 1：首页 ===================== -->
+    <section class="panel is-active" id="panel-home">
+
+      <!-- 顶部问候文字 -->
+      <header class="greet">
+        <div class="avatar">轻</div>
+        <div class="greet-text">
+          <p class="greet-sub" id="greetSub">下午好，Guest</p>
+          <h1 class="greet-main">轻盈健康计划
+            <svg class="i chev" viewBox="0 0 24 24"><use href="#ic-chev-d"/></svg>
+          </h1>
+        </div>
+        <button class="bell" id="bellBtn" aria-label="消息通知">
+          <svg class="i" viewBox="0 0 24 24"><use href="#ic-bell"/></svg>
+          <span class="dot"></span>
+        </button>
+      </header>
+
+      <!-- 大卡：饮水打卡（自定义饮水量 + 快捷增减） -->
+      <div class="card card-lg hero-water">
+        <div class="card-head">
+          <span class="badge cyan"><svg class="i" viewBox="0 0 24 24"><use href="#ic-drop"/></svg></span>
+          <span class="card-title">饮水打卡</span>
+          <button class="head-act" data-q="drink">详情<svg class="i" viewBox="0 0 24 24"><use href="#ic-chev-r"/></svg></button>
+        </div>
+
+        <div class="hero-top">
+          <div class="hero-info">
+            <div class="num"><b id="waterNow">0</b><span class="unit">/ <em id="waterGoalTxt">2000</em> ml</span></div>
+            <p class="hint">完成 <b id="waterPct">0</b>% · 还差 <b id="waterLeft">2000</b> ml</p>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 78 78">
+              <circle class="ring-bg" cx="39" cy="39" r="33"/>
+              <circle class="ring-fg" id="waterRing" cx="39" cy="39" r="33"/>
+            </svg>
+            <div class="ring-center">
+              <b id="waterRingPct">0%</b>
+              <span>今日</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar"><i id="waterBar"></i></div>
+
+        <!-- 自定义饮水量：想记多少填多少 -->
+        <div class="water-add">
+          <label class="inp-wrap" for="waterInput">
+            <input class="inp" id="waterInput" type="number" inputmode="numeric" min="1" max="3000" placeholder="自定义饮水量，如 350">
+            <span class="suffix">ml</span>
+          </label>
+          <button class="btn-lg" id="waterAddBtn">
+            <svg class="i" viewBox="0 0 24 24"><use href="#ic-plus"/></svg>加入
+          </button>
+        </div>
+        <div class="mini-btns">
+          <button class="mini" data-water="200"><svg class="i" viewBox="0 0 24 24"><use href="#ic-plus"/></svg>200</button>
+          <button class="mini" data-water="500"><svg class="i" viewBox="0 0 24 24"><use href="#ic-plus"/></svg>500</button>
+          <button class="mini" data-water="-200"><svg class="i" viewBox="0 0 24 24"><use href="#ic-minus"/></svg>撤回</button>
+          <button class="mini" data-water-reset><svg class="i" viewBox="0 0 24 24"><use href="#ic-refresh"/></svg>重置</button>
+        </div>
+      </div>
+
+      <!-- 小卡：体重目标（可编辑）/ 今日摄入 -->
+      <div class="grid-2" style="margin-top:12px">
+
+        <div class="card card-sm tap" id="weightCard" data-q="weight" role="button" tabindex="0">
+          <div class="card-head">
+            <span class="badge teal"><svg class="i" viewBox="0 0 24 24"><use href="#ic-scale"/></svg></span>
+            <span class="card-title">体重目标</span>
+          </div>
+          <div class="weight-body">
+            <div class="ring-wrap">
+              <svg class="ring" viewBox="0 0 78 78">
+                <circle class="ring-bg" cx="39" cy="39" r="33"/>
+                <circle class="ring-fg" id="weightRing" cx="39" cy="39" r="33"/>
+              </svg>
+              <div class="ring-center">
+                <b id="goalPct">0%</b>
+                <span>已达成</span>
+              </div>
+            </div>
+            <div class="weight-info">
+              <div class="v"><span id="weightNow">0</span> kg</div>
+              <div class="k">目标 <span id="weightGoalTxt">0</span> kg<br/>已减 <span id="weightLost">0</span> kg</div>
+            </div>
+          </div>
+          <span class="head-act push">点击修改<svg class="i" viewBox="0 0 24 24"><use href="#ic-pencil"/></svg></span>
+        </div>
+
+        <div class="card card-sm tap" data-q="diet" role="button" tabindex="0">
+          <div class="card-head">
+            <span class="badge amber"><svg class="i" viewBox="0 0 24 24"><use href="#ic-flame"/></svg></span>
+            <span class="card-title">今日摄入</span>
+          </div>
+          <div class="num"><b id="dietKcalHome">0</b><span class="unit">kcal</span></div>
+          <p class="hint">目标 <b id="dietGoalTxt">1500</b> · 剩余 <b id="dietLeftTxt">0</b></p>
+          <div class="bar push"><i id="dietBarHome"></i></div>
+        </div>
+      </div>
+
+      <!-- 今日数据：等高小卡，底部对齐 -->
+      <h2 class="section-title">今日数据<small>点击查看详情</small></h2>
+      <div class="grid-2">
+
+        <div class="card card-sm tap" data-q="posture" role="button" tabindex="0">
+          <div class="card-head">
+            <span class="badge violet"><svg class="i" viewBox="0 0 24 24"><use href="#ic-person"/></svg></span>
+            <span class="card-title">体态档案</span>
+          </div>
+          <div class="num"><b id="postureBmi">0</b><span class="unit">BMI</span></div>
+          <p class="hint">腰围 <b id="postureWaist">0</b> cm · 体脂 <b id="postureFat">0</b>%</p>
+          <span class="head-act push">详情<svg class="i" viewBox="0 0 24 24"><use href="#ic-chev-r"/></svg></span>
+        </div>
+
+        <div class="card card-sm tap" data-q="sport" role="button" tabindex="0">
+          <div class="card-head">
+            <span class="badge coral"><svg class="i" viewBox="0 0 24 24"><use href="#ic-dumbbell"/></svg></span>
+            <span class="card-title">运动打卡</span>
+          </div>
+          <div class="num"><b id="sportMin">0</b><span class="unit">分钟</span></div>
+          <p class="hint">本周 <b id="sportWeekTxt">0</b> / <b id="sportGoalTxt">210</b> 分钟</p>
+          <span class="head-act push">详情<svg class="i" viewBox="0 0 24 24"><use href="#ic-chev-r"/></svg></span>
+        </div>
+      </div>
+
+      <!-- 计划速览 -->
+      <h2 class="section-title">我的计划<small>任务可自定义</small></h2>
+      <div class="grid-2">
+
+        <div class="card card-sm tap" data-goto="plan" role="button" tabindex="0">
+          <div class="card-head">
+            <span class="badge teal"><svg class="i" viewBox="0 0 24 24"><use href="#ic-target"/></svg></span>
+            <span class="card-title">打卡进度</span>
+          </div>
+          <div class="num"><b id="planDoneHome">0</b><span class="unit">/ <em id="planTotalHome">0</em> 项</span></div>
+          <p class="hint">完成度 <b id="planPctHome">0</b>%</p>
+          <div class="bar push"><i id="planBarHome"></i></div>
+        </div>
+
+        <div class="card card-sm tap" data-q="plan" role="button" tabindex="0">
+          <div class="card-head">
+            <span class="badge amber"><svg class="i" viewBox="0 0 24 24"><use href="#ic-calendar"/></svg></span>
+            <span class="card-title">42 天方案</span>
+          </div>
+          <div class="num"><b id="planWeek">1</b><span class="unit">/ 6 周</span></div>
+          <p class="hint">已坚持 <b id="planDaysTxt">0</b> 天 · 目标 <b id="planGoalTxt">0</b> kg</p>
+          <span class="head-act push">详情<svg class="i" viewBox="0 0 24 24"><use href="#ic-chev-r"/></svg></span>
+        </div>
+      </div>
+
+      <p class="foot-note">数据只保存在本机浏览器（localStorage），随时可改、可清空</p>
+    </section>
+
+    <!-- ===================== 面板 2：记录 ===================== -->
+    <section class="panel" id="panel-record">
+      <div class="page-title">
+        <h2>今日记录</h2>
+        <p>拍照估算热量，三餐热量自己填，左滑删除</p>
+      </div>
+
+      <!-- 大卡：饮食（拍照识别 + 三餐自定义热量） -->
+      <div class="card card-lg">
+        <div class="card-head">
+          <span class="badge amber"><svg class="i" viewBox="0 0 24 24"><use href="#ic-bowl"/></svg></span>
+          <span class="card-title">饮食记录</span>
+          <button class="head-act" data-q="diet">详情<svg class="i" viewBox="0 0 24 24"><use href="#ic-chev-r"/></svg></button>
+        </div>
+        <div class="num"><b id="dietKcal">0</b><span class="unit">/ <em id="dietKcalGoal">1500</em> kcal</span></div>
+        <p class="hint">三餐 <b id="mealKcalSum">0</b> + 识别 <b id="photoKcalSum">0</b> kcal · 剩余 <b id="dietLeft">0</b></p>
+        <div class="bar"><i id="dietBar"></i></div>
+
+        <div class="photo-row">
+          <button class="btn-lg" id="cameraBtn"><svg class="i" viewBox="0 0 24 24"><use href="#ic-camera"/></svg>拍照估算</button>
+          <button class="btn-soft" id="albumBtn"><svg class="i" viewBox="0 0 24 24"><use href="#ic-image"/></svg>相册</button>
+        </div>
+        <!-- 拍照 / 相册共用同一个原生文件选择框 -->
+        <input class="visually-hidden" id="photoInput" type="file" accept="image/*">
+
+        <div class="meal-list" id="mealList"></div>
+      </div>
+
+      <!-- 快捷记录：水量、运动、体重都能自定义 -->
+      <h2 class="section-title">快捷记录<small>数字都能自己改</small></h2>
+      <div class="card">
+        <div class="chip-row" style="margin-top:0">
+          <button class="chip primary" data-quick-water="300"><svg class="i" viewBox="0 0 24 24"><use href="#ic-drop"/></svg>喝水 300 ml</button>
+          <button class="chip primary" data-quick-water="500"><svg class="i" viewBox="0 0 24 24"><use href="#ic-drop"/></svg>喝水 500 ml</button>
+          <button class="chip" data-quick-sport="30"><svg class="i" viewBox="0 0 24 24"><use href="#ic-dumbbell"/></svg>运动 30 分钟</button>
+          <button class="chip" data-q="weight"><svg class="i" viewBox="0 0 24 24"><use href="#ic-scale"/></svg>记体重</button>
+          <button class="chip" data-log-add><svg class="i" viewBox="0 0 24 24"><use href="#ic-plus"/></svg>自定义一条</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">今天都记了些什么<small id="recordCount">0 条</small></h2>
+      <div class="list" id="recordList"></div>
+    </section>
+
+    <!-- ===================== 面板 3：图表 ===================== -->
+    <section class="panel" id="panel-chart">
+      <div class="page-title">
+        <h2>数据图表</h2>
+        <p>近 7 天饮水量 · 目标与体重都能改</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="badge cyan"><svg class="i" viewBox="0 0 24 24"><use href="#ic-chart"/></svg></span>
+          <span class="card-title">近 7 天饮水量（ml）</span>
+          <span class="head-act">日均 <b id="chartAvg">0</b></span>
+        </div>
+        <div class="bars" id="barsWrap"></div>
+        <div class="legend">
+          <span><i style="background:var(--cyan)"></i>历史</span>
+          <span><i style="background:var(--coral)"></i>今天</span>
+        </div>
+        <div class="bar push">
+          <i id="chartGoalBar" style="width:0"></i>
+        </div>
+        <p class="hint">每日目标 <b id="chartGoalMl">2000</b> ml · 达标 <b id="chartHitDays">0</b> 天</p>
+      </div>
+
+      <h2 class="section-title">体重与目标<small>点击任意一条即可编辑</small></h2>
+      <div class="list">
+        <div class="item tap" data-q="weight" role="button" tabindex="0">
+          <span class="badge teal"><svg class="i" viewBox="0 0 24 24"><use href="#ic-scale"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">当前体重 / 目标</div>
+            <div class="d">起始 <span id="chartStart">65.0</span> → 目标 <span id="chartGoal">55.0</span> kg</div>
+          </div>
+          <div class="v"><span id="chartWeight">62.4</span> kg</div>
+        </div>
+        <div class="item tap" data-q="posture" role="button" tabindex="0">
+          <span class="badge violet"><svg class="i" viewBox="0 0 24 24"><use href="#ic-person"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">体态档案</div>
+            <div class="d">腰围 <span id="chartWaist">68</span> cm · 体脂 <span id="chartFat">24.6</span>%</div>
+          </div>
+          <div class="v">BMI <span id="chartBmi">21.4</span></div>
+        </div>
+        <div class="item tap" data-q="sport" role="button" tabindex="0">
+          <span class="badge coral"><svg class="i" viewBox="0 0 24 24"><use href="#ic-dumbbell"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">本周运动</div>
+            <div class="d">累计 <span id="chartSport">0</span> / <span id="chartSportGoal">210</span> 分钟</div>
+          </div>
+          <div class="v" id="chartSportState">继续</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 面板 4：计划 ===================== -->
+    <section class="panel" id="panel-plan">
+      <div class="page-title">
+        <h2>42 天减脂方案</h2>
+        <p>任务自己定，勾一个少一个</p>
+      </div>
+
+      <div class="card card-lg">
+        <div class="card-head">
+          <span class="badge teal"><svg class="i" viewBox="0 0 24 24"><use href="#ic-target"/></svg></span>
+          <span class="card-title">今日任务进度</span>
+          <button class="head-act" data-plan-reset><svg class="i" viewBox="0 0 24 24"><use href="#ic-refresh"/></svg>重置</button>
+        </div>
+        <div class="num"><b id="planDone">0</b><span class="unit">/ <em id="planTotal">0</em> 项</span></div>
+        <p class="hint">完成度 <b id="planPct">0</b>% · <b id="planTip">继续保持</b></p>
+        <div class="bar"><i id="planBar"></i></div>
+
+        <!-- 自定义计划：任务名称自己填 -->
+        <div class="water-add">
+          <label class="inp-wrap" for="taskInput">
+            <input class="inp" id="taskInput" type="text" maxlength="18" placeholder="新增今日任务，如 睡前泡脚">
+          </label>
+          <button class="btn-lg" id="taskAddBtn"><svg class="i" viewBox="0 0 24 24"><use href="#ic-plus"/></svg>添加</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">打卡清单<small>点一下切换完成，点铅笔可编辑</small></h2>
+      <div class="list" id="planList"></div>
+
+      <h2 class="section-title">目标设定<small>周期与减重速度</small></h2>
+      <div class="list">
+        <div class="item tap" data-q="plan" role="button" tabindex="0">
+          <span class="badge amber"><svg class="i" viewBox="0 0 24 24"><use href="#ic-calendar"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">方案进度</div>
+            <div class="d">共 <span id="planCycleTxt">42</span> 天 · 第 <span id="planWeekTxt">1</span> 周</div>
+          </div>
+          <div class="v"><span id="planDaysTxt2">0</span> 天</div>
+        </div>
+        <div class="item tap" data-q="weight" role="button" tabindex="0">
+          <span class="badge teal"><svg class="i" viewBox="0 0 24 24"><use href="#ic-scale"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">体重目标</div>
+            <div class="d">每周减重 <span id="planRateTxt">0.6</span> kg</div>
+          </div>
+          <div class="v">目标 <span id="planGoalTxt2">0</span> kg</div>
+        </div>
+      </div>
+
+      <p class="foot-note">每周减重 0.5 – 0.8 kg 更稳定，别追求速成</p>
+    </section>
+
+    <!-- ===================== 面板 5：我的 ===================== -->
+    <section class="panel" id="panel-mine">
+      <div class="page-title">
+        <h2>我的</h2>
+        <p>昵称、目标、记录都能改，首页会同步更新</p>
+      </div>
+
+      <div class="card">
+        <div class="greet" style="padding:0 0 4px">
+          <div class="avatar" id="mineAvatar">轻</div>
+          <div class="greet-text">
+            <p class="greet-sub">轻盈健康 · 会员等级 Lv.3</p>
+            <h1 class="greet-main" id="mineName">Guest</h1>
+          </div>
+          <button class="sheet-x" data-q="profile" aria-label="编辑昵称">
+            <svg class="i" viewBox="0 0 24 24"><use href="#ic-pencil"/></svg>
+          </button>
+        </div>
+        <div class="chip-row">
+          <button class="chip" data-q="profile">坚持 <b id="mineDays">0</b> 天</button>
+          <button class="chip" data-goto="record">记录 <b id="mineRecords">0</b> 条</button>
+          <button class="chip" data-q="water-goal">饮水达标 <b id="mineWaterDays">0</b> 天</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">目标设置<small>点任意一条即可修改</small></h2>
+      <div class="list">
+        <div class="item tap" data-q="water-goal" role="button" tabindex="0">
+          <span class="badge cyan"><svg class="i" viewBox="0 0 24 24"><use href="#ic-drop"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">每日饮水目标</div>
+            <div class="d">点一下就能改</div>
+          </div>
+          <div class="v"><span id="mineWaterGoal">2000</span> ml</div>
+        </div>
+        <div class="item tap" data-q="diet-goal" role="button" tabindex="0">
+          <span class="badge amber"><svg class="i" viewBox="0 0 24 24"><use href="#ic-flame"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">每日热量上限</div>
+            <div class="d">超过会提醒</div>
+          </div>
+          <div class="v"><span id="mineKcalGoal">1500</span> kcal</div>
+        </div>
+        <div class="item tap" data-q="weight" role="button" tabindex="0">
+          <span class="badge teal"><svg class="i" viewBox="0 0 24 24"><use href="#ic-scale"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">体重目标</div>
+            <div class="d">当前 <span id="mineWeightNow">0</span> kg · 起始 <span id="mineWeightStart">0</span> kg</div>
+          </div>
+          <div class="v"><span id="mineGoal">0</span> kg</div>
+        </div>
+        <div class="item tap" data-q="posture" role="button" tabindex="0">
+          <span class="badge violet"><svg class="i" viewBox="0 0 24 24"><use href="#ic-person"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">身高 / 腰围 / 体脂</div>
+            <div class="d">腰围 <span id="mineWaist">0</span> cm · 体脂 <span id="mineFat">0</span>%</div>
+          </div>
+          <div class="v"><span id="mineHeight">170</span> cm</div>
+        </div>
+        <div class="item tap" data-q="sport" role="button" tabindex="0">
+          <span class="badge coral"><svg class="i" viewBox="0 0 24 24"><use href="#ic-dumbbell"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">每周运动目标</div>
+            <div class="d">本周已 <span id="mineSportWeek">0</span> 分钟</div>
+          </div>
+          <div class="v"><span id="mineSportGoal">210</span> 分钟</div>
+        </div>
+        <div class="item tap" data-q="plan" role="button" tabindex="0">
+          <span class="badge amber"><svg class="i" viewBox="0 0 24 24"><use href="#ic-calendar"/></svg></span>
+          <div class="txt-wrap">
+            <div class="t">方案周期</div>
+            <div class="d">已坚持 <span id="minePlanDays">0</span> 天</div>
+          </div>
+          <div class="v"><span id="mineCycle">42</span> 天</div>
+        </div>
+      </div>
+
+      <h2 class="section-title">数据管理<small>只存在本机浏览器</small></h2>
+      <div class="card">
+        <button class="btn-primary" id="saveBtn">保存全部设置</button>
+        <button class="btn-ghost" id="restoreBtn">恢复默认目标</button>
+        <button class="btn-ghost" id="resetBtn">清空全部数据</button>
+        <p class="hint" style="text-align:center">清空后所有目标与记录都会回到初始值</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== 底部 Tab 导航（固定在手机底部，不随内容滚动） ===================== -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab is-active" data-tab="home">
+      <span class="icon"><svg class="i" viewBox="0 0 24 24"><use href="#ic-home"/></svg></span>
+      <span class="txt">首页</span>
+    </button>
+    <button class="tab" data-tab="record">
+      <span class="icon"><svg class="i" viewBox="0 0 24 24"><use href="#ic-note"/></svg></span>
+      <span class="txt">记录</span>
+    </button>
+    <button class="tab" data-tab="chart">
+      <span class="icon"><svg class="i" viewBox="0 0 24 24"><use href="#ic-chart"/></svg></span>
+      <span class="txt">图表</span>
+    </button>
+    <button class="tab" data-tab="plan">
+      <span class="icon"><svg class="i" viewBox="0 0 24 24"><use href="#ic-calendar"/></svg></span>
+      <span class="txt">计划</span>
+    </button>
+    <button class="tab" data-tab="mine">
+      <span class="icon"><svg class="i" viewBox="0 0 24 24"><use href="#ic-person"/></svg></span>
+      <span class="txt">我的</span>
+    </button>
+  </nav>
+
+  <!-- ===================== 遮罩层（所有抽屉共用） ===================== -->
+  <div class="mask" id="mask"></div>
+
+  <!-- 通用编辑抽屉：标题 + 表单由 JS 渲染，底部取消 / 保存 -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h3 id="sheetTitle">编辑</h3>
+      <button class="sheet-x" id="sheetClose" aria-label="关闭">
+        <svg class="i" viewBox="0 0 24 24"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+    <p class="desc" id="sheetDesc"></p>
+    <div id="sheetBody"></div>
+    <div class="sheet-foot">
+      <button class="btn-ghost" id="sheetCancel">取消</button>
+      <button class="btn-primary" id="sheetOk">保存</button>
+    </div>
+  </div>
+
+  <!-- 拍照识别抽屉：照片预览 + 识别进度 + 可手动改热量 -->
+  <div class="sheet" id="photoSheet" role="dialog" aria-modal="true" aria-labelledby="photoTitle">
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h3 id="photoTitle">拍照估算热量</h3>
+      <button class="sheet-x" id="photoClose" aria-label="关闭">
+        <svg class="i" viewBox="0 0 24 24"><use href="#ic-x"/></svg>
+      </button>
+    </div>
+    <p class="desc" id="photoDesc">照片只在本机分析，识别结果仅供参考，热量可以自己改</p>
+    <img class="photo-preview" id="photoPreview" alt="待识别的食物照片">
+    <div class="scan" id="scanBar">
+      <span class="dotline"></span><span id="scanText">正在识别…</span>
+    </div>
+    <div class="field">
+      <span class="field-label">识别结果</span>
+      <span class="field-input"><b id="photoGuess" style="margin-left:auto">—</b></span>
+    </div>
+    <div class="field">
+      <label class="field-label" for="photoName">食物名称</label>
+      <span class="field-input">
+        <input class="inp" id="photoName" type="text" maxlength="16" placeholder="如 番茄鸡蛋面">
+      </span>
+    </div>
+    <div class="field">
+      <label class="field-label" for="photoKcal">热量（kcal）</label>
+      <span class="field-input">
+        <input class="inp" id="photoKcal" type="number" inputmode="numeric" min="1" max="3000" placeholder="如 520">
+      </span>
+    </div>
+    <div class="field">
+      <label class="field-label" for="photoMeal">记到哪一餐</label>
+      <span class="field-input">
+        <select class="inp" id="photoMeal">
+          <option value="breakfast">早餐</option>
+          <option value="lunch">午餐</option>
+          <option value="dinner">晚餐</option>
+          <option value="snack">加餐</option>
+        </select>
+      </span>
+    </div>
+    <div class="qrow" id="photoQuick"></div>
+    <div class="sheet-foot">
+      <button class="btn-ghost" id="photoCancel">取消</button>
+      <button class="btn-primary" id="photoSave">保存记录</button>
+    </div>
+  </div>
+
+  <!-- ===================== 轻提示 ===================== -->
+  <div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================================
+   数据层：所有内容都存在本机 localStorage，无后端。
+   想换成多端同步，只要把 load / save 换成接口请求。
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var KEY = 'qingying-health-v1';
+
+  /* 三餐定义：名称与热量都能改，这里的值只是初始值 */
+  var MEAL_DEF = [
+    { key: 'breakfast', label: '早餐', short: '早', name: '燕麦 + 水煮蛋', kcal: 320 },
+    { key: 'lunch', label: '午餐', short: '午', name: '少油主食 + 两份蔬菜', kcal: 460 },
+    { key: 'dinner', label: '晚餐', short: '晚', name: '杂粮饭 + 清蒸鱼', kcal: 420 },
+    { key: 'snack', label: '加餐', short: '加', name: '水果 / 坚果', kcal: 0 }
+  ];
+
+  /* 默认计划任务：计划页可以随意增删改 */
+  var TASK_DEF = [
+    { id: 't1', name: '早餐：燕麦 + 水煮蛋', note: '07:30 · 约 320 kcal', done: true },
+    { id: 't2', name: '上午饮水 500 ml', note: '10:00 · 小口慢喝', done: true },
+    { id: 't3', name: '午餐：少油主食 + 两份蔬菜', note: '12:30 · 约 460 kcal', done: false },
+    { id: 't4', name: '有氧快走 30 分钟', note: '18:30 · 心率 120 左右', done: false },
+    { id: 't5', name: '睡前拉伸 10 分钟', note: '22:00 · 放松肩颈与腰背', done: false }
+  ];
+
+  /* 拍照估算用的参考库：按画面主色 + 亮度挑选，结果仍可手动改 */
+  var FOOD_TABLE = [
+    { name: '番茄鸡蛋面', kcal: 520 },
+    { name: '鸡胸肉沙拉', kcal: 340 },
+    { name: '燕麦牛奶粥', kcal: 280 },
+    { name: '红烧肉盖饭', kcal: 780 },
+    { name: '清蒸鱼 + 杂粮饭', kcal: 460 },
+    { name: '水煮牛肉 + 米饭', kcal: 690 },
+    { name: '全麦三明治', kcal: 380 },
+    { name: '时蔬炒饭', kcal: 620 }
+  ];
+
+  /* 默认数据（首次打开 / 清空数据后使用） */
+  var DEFAULTS = {
+    name: 'Guest',
+    water: 0,                 // 今日饮水（ml）
+    waterGoal: 2000,          // 每日饮水目标（ml）
+    weight: 62.4,             // 当前体重（kg）
+    weightStart: 65.0,        // 起始体重（kg）
+    goal: 55.0,               // 目标体重（kg）
+    height: 170,              // 身高（cm）
+    waist: 68,                // 腰围（cm）
+    fat: 24.6,                // 体脂率（%）
+    kcalGoal: 1500,           // 每日热量上限（kcal）
+    sport: 0,                 // 今日运动（分钟）
+    sportWeek: 0,             // 本周运动（分钟）
+    sportGoal: 210,           // 每周运动目标（分钟）
+    days: 1,                  // 已坚持天数
+    cycle: 42,                // 方案周期（天）
+    rate: 0.6,                // 计划每周减重（kg）
+    waterDays: 0,             // 饮水达标天数
+    logs: [],                 // 记录 [{id,kind,title,val,kcal,time,thumb}]
+    meals: {},                // 三餐 {breakfast:{name,kcal},...}
+    tasks: TASK_DEF.map(function (t) {
+      return { id: t.id, name: t.name, note: t.note, done: !!t.done };   // 打卡任务
+    }),
+    waterHistory: [1500, 1750, 1200, 2000, 900, 1650]  // 近 6 天饮水（ml）
+  };
+
+  var state = load();
+  var openRow = null;         // 当前左滑打开的那一行
+
+
+  /* ---------- 小工具 ---------- */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+  function round1(n) { return Math.round(n * 10) / 10; }
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function nowTime() { var d = new Date(); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); }
+  function uid() { return String(Date.now()) + Math.floor(Math.random() * 1000); }
+  /* 写文字 / 进度条：元素不存在就静默跳过，避免页面缺一块时报错 */
+  function setText(id, txt) { var el = document.getElementById(id); if (el) { el.textContent = txt; } }
+  function setPct(id, pct) { var el = document.getElementById(id); if (el) { el.style.width = clamp(pct, 0, 100) + '%'; } }
+  function setRing(id, pct) {
+    var el = document.getElementById(id);
+    /* 圆周长 ≈ 2π × 33 ≈ 207，用 dashoffset 表示环形进度 */
+    if (el) { el.style.strokeDashoffset = (207 * (1 - clamp(pct, 0, 100) / 100)).toFixed(1); }
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  /* 把输入框里的文字转成合法数字：不合法就返回 null，由调用方给提示 */
+  function num(v, min, max) {
+    var n = parseFloat(v);
+    if (!isFinite(n)) { return null; }
+    if (min !== undefined && n < min) { return null; }
+    if (max !== undefined && n > max) { return null; }
+    return n;
+  }
+
+  function load() {
+    var data = {}, k;
+    for (k in DEFAULTS) { data[k] = DEFAULTS[k]; }
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        for (k in saved) {
+          if (saved[k] !== null && saved[k] !== undefined) { data[k] = saved[k]; }
+        }
+      }
+    } catch (err) { /* 隐私模式 / 数据损坏时静默回退默认值 */ }
+    return normalize(data);
+  }
+
+  /* 兜底：旧数据或异常结构都不能让页面崩掉 */
+  function normalize(data) {
+    if (!Array.isArray(data.logs)) { data.logs = []; }
+    data.logs = data.logs.filter(function (it) { return it && typeof it === 'object'; });
+    if (!Array.isArray(data.waterHistory) || !data.waterHistory.length) {
+      data.waterHistory = DEFAULTS.waterHistory.slice();
+    }
+    data.waterHistory = data.waterHistory.map(function (v) {
+      var n = num(v, 0);
+      return n === null ? 0 : Math.round(n);
+    }).slice(-6);
+    if (!data.meals || typeof data.meals !== 'object') { data.meals = {}; }
+    MEAL_DEF.forEach(function (m) {
+      var cur = data.meals[m.key];
+      if (!cur || typeof cur !== 'object') { cur = data.meals[m.key] = {}; }
+      if (typeof cur.name !== 'string' || !cur.name) { cur.name = m.name; }
+      var k = num(cur.kcal, 0, 3000);
+      cur.kcal = k === null ? m.kcal : Math.round(k);
+    });
+    if (!Array.isArray(data.tasks)) {
+      data.tasks = TASK_DEF.map(function (t) { return { id: t.id, name: t.name, note: t.note, done: !!t.done }; });
+    }
+    data.tasks = data.tasks.filter(function (t) { return t && typeof t.name === 'string'; }).map(function (t) {
+      return {
+        id: t.id || uid(),
+        name: t.name,
+        note: typeof t.note === 'string' ? t.note : '',
+        done: !!t.done
+      };
+    });
+    ['water', 'waterGoal', 'sport', 'sportWeek', 'sportGoal', 'days', 'cycle', 'waterDays'].forEach(function (k) {
+      var n = num(data[k], 0, 100000);
+      data[k] = n === null ? DEFAULTS[k] : Math.round(n);
+    });
+    ['weight', 'weightStart', 'goal', 'height', 'waist', 'fat', 'kcalGoal', 'rate'].forEach(function (k) {
+      var n = num(data[k], 0, 100000);
+      data[k] = n === null ? DEFAULTS[k] : n;
+    });
+    if (typeof data.name !== 'string' || !data.name) { data.name = DEFAULTS.name; }
+    return data;
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (err) { toast('本地存储不可用，本次修改只对当前页面有效'); }
+  }
+
+  /* ---------- 轻提示 Toast ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = $('#toast');
+    if (!el) { return; }
+    el.textContent = msg;
+    el.classList.add('is-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('is-show'); }, 1800);
+  }
+
+  /* ---------- 派生数据：全部由 state 实时算出，不存冗余值 ---------- */
+  function mealSum() {
+    return MEAL_DEF.reduce(function (sum, m) { return sum + (Number(state.meals[m.key].kcal) || 0); }, 0);
+  }
+  function photoLogs() {
+    return state.logs.filter(function (it) { return it.kind === 'photo' && isFinite(it.kcal); });
+  }
+  function photoSum() {
+    return photoLogs().reduce(function (sum, it) { return sum + Number(it.kcal); }, 0);
+  }
+  function kcalTotal() { return mealSum() + photoSum(); }
+  function bmi() {
+    var h = state.height / 100;
+    return h > 0 ? round1(state.weight / (h * h)) : 0;
+  }
+  function lost() { return round1(state.weightStart - state.weight); }
+  function planCount() {
+    return { done: state.tasks.filter(function (t) { return t.done; }).length, total: state.tasks.length };
+  }
+  function planPercent() {
+    var c = planCount();
+    return c.total ? Math.round(c.done / c.total * 100) : 0;
+  }
+  function weekNo() { return clamp(Math.ceil(state.days / 7), 1, Math.max(1, Math.ceil(state.cycle / 7))); }
+  function chartData() { return state.waterHistory.slice(-6).concat([state.water]); }
+  function avgWater() {
+    var arr = chartData();
+    return Math.round(arr.reduce(function (a, b) { return a + b; }, 0) / arr.length);
+  }
+  function hitDays() {
+    return chartData().filter(function (v) { return v >= state.waterGoal; }).length;
+  }
+
+  /* ---------- 首页：饮水卡片 ---------- */
+  function renderWater() {
+    var pct = state.waterGoal > 0 ? clamp(Math.round(state.water / state.waterGoal * 100), 0, 999) : 0;
+    setText('waterNow', state.water);
+    setText('waterGoalTxt', state.waterGoal);
+    setText('waterPct', pct);
+    setText('waterLeft', Math.max(0, state.waterGoal - state.water));
+    setText('waterRingPct', pct + '%');
+    setPct('waterBar', pct);
+    setRing('waterRing', pct);
+    setText('chartGoalMl', state.waterGoal);
+    setText('mineWaterGoal', state.waterGoal);
+  }
+
+  /* ---------- 首页：体重卡片（环形进度） ---------- */
+  function renderWeight() {
+    var total = state.weightStart - state.goal;
+    var done = state.weightStart - state.weight;
+    var pct = total > 0 ? clamp(Math.round(done / total * 100), 0, 100) : 100;
+    setText('weightNow', state.weight.toFixed(1));
+    setText('weightGoalTxt', state.goal.toFixed(1));
+    setText('weightLost', lost().toFixed(1));
+    setText('goalPct', pct + '%');
+    setRing('weightRing', pct);
+    /* 图表页 / 计划页 / 我的页共用同一份体重数据 */
+    setText('chartWeight', state.weight.toFixed(1));
+    setText('chartStart', state.weightStart.toFixed(1));
+    setText('chartGoal', state.goal.toFixed(1));
+    setText('planGoalTxt', state.goal.toFixed(1));
+    setText('planGoalTxt2', state.goal.toFixed(1));
+    setText('mineWeightNow', state.weight.toFixed(1));
+    setText('mineWeightStart', state.weightStart.toFixed(1));
+    setText('mineGoal', state.goal.toFixed(1));
+  }
+
+  /* ---------- 饮食：三餐 + 拍照识别合计 ---------- */
+  function renderDiet() {
+    var total = kcalTotal();
+    var left = Math.max(0, state.kcalGoal - total);
+    var pct = state.kcalGoal > 0 ? Math.round(total / state.kcalGoal * 100) : 0;
+    setText('dietKcal', total);
+    setText('dietKcalGoal', state.kcalGoal);
+    setText('mealKcalSum', mealSum());
+    setText('photoKcalSum', photoSum());
+    setText('dietLeft', left);
+    setPct('dietBar', pct);
+    setText('dietKcalHome', total);
+    setText('dietGoalTxt', state.kcalGoal);
+    setText('dietLeftTxt', left);
+    setPct('dietBarHome', pct);
+    setText('mineKcalGoal', state.kcalGoal);
+  }
+
+  /* ---------- 记录页：三餐三行（点一下改内容与热量） ---------- */
+  function renderMeals() {
+    var box = $('#mealList');
+    if (!box) { return; }
+    box.innerHTML = MEAL_DEF.map(function (m) {
+      var cur = state.meals[m.key];
+      return '<button class="meal" data-meal="' + m.key + '">' +
+        '<span class="meal-badge">' + m.short + '</span>' +
+        '<span class="meal-main"><span class="n">' + escapeHtml(cur.name) + '</span>' +
+        '<span class="s">' + m.label + ' · 点一下可改</span></span>' +
+        '<span class="meal-kcal">' + cur.kcal + ' kcal</span></button>';
+    }).join('');
+  }
+
+  /* ---------- 体态档案：身高 / 腰围 / 体脂 / BMI ---------- */
+  function renderPosture() {
+    setText('postureBmi', bmi().toFixed(1));
+    setText('postureWaist', state.waist);
+    setText('postureFat', state.fat.toFixed(1));
+    setText('chartWaist', state.waist);
+    setText('chartFat', state.fat.toFixed(1));
+    setText('chartBmi', bmi().toFixed(1));
+    setText('mineHeight', state.height);
+    setText('mineWaist', state.waist);
+    setText('mineFat', state.fat.toFixed(1));
+  }
+
+  /* ---------- 运动打卡：今日 / 本周 / 周目标 ---------- */
+  function renderSport() {
+    setText('sportMin', state.sport);
+    setText('sportWeekTxt', state.sportWeek);
+    setText('sportGoalTxt', state.sportGoal);
+    setText('chartSport', state.sportWeek);
+    setText('chartSportGoal', state.sportGoal);
+    setText('chartSportState', state.sportWeek >= state.sportGoal ? '已达标' : '继续');
+    setText('mineSportWeek', state.sportWeek);
+    setText('mineSportGoal', state.sportGoal);
+  }
+
+  /* ---------- 计划页：进度 + 可自定义的任务清单 ---------- */
+  function renderPlan() {
+    var c = planCount();
+    var pct = planPercent();
+    setText('planDone', c.done);
+    setText('planTotal', c.total);
+    setText('planPct', pct);
+    setPct('planBar', pct);
+    setText('planTip', c.total === 0 ? '还没有任务，先加一条' :
+      (pct === 100 ? '今天全部完成，太棒了' : (pct >= 60 ? '继续保持' : '加油，先做一件小事')));
+    /* 首页那张进度小卡 */
+    setText('planDoneHome', c.done);
+    setText('planTotalHome', c.total);
+    setText('planPctHome', pct);
+    setPct('planBarHome', pct);
+    /* 计划页 / 我的页 */
+    setText('planWeek', weekNo());
+    setText('planWeekTxt', weekNo());
+    setText('planCycleTxt', state.cycle);
+    setText('planDaysTxt', state.days);
+    setText('planDaysTxt2', state.days);
+    setText('planRateTxt', state.rate.toFixed(1));
+    setText('mineDays', state.days);
+    setText('minePlanDays', state.days);
+    setText('mineCycle', state.cycle);
+  }
+
+  /* ---------- 计划页：任务行（可勾选 / 编辑 / 删除） ---------- */
+  function renderTasks() {
+    var list = $('#planList');
+    if (!list) { return; }
+    if (!state.tasks.length) {
+      list.innerHTML = '<p class="empty">还没有任务，在上面的输入框里写一条试试</p>';
+      return;
+    }
+    list.innerHTML = state.tasks.map(function (t, i) {
+      return '<div class="task' + (t.done ? ' done' : '') + '" data-task="' + escapeHtml(t.id) + '">' +
+        '<button class="ck" data-task-toggle="' + escapeHtml(t.id) + '" aria-label="切换完成状态">' +
+        '<svg class="i" viewBox="0 0 24 24"><use href="#ic-check"/></svg></button>' +
+        '<button class="txt-wrap" data-task-toggle="' + escapeHtml(t.id) + '">' +
+        '<span class="t">' + (i + 1) + '. ' + escapeHtml(t.name) + '</span>' +
+        '<span class="d">' + escapeHtml(t.note || (t.done ? '已完成' : '待完成')) + '</span></button>' +
+        '<button class="icon-mini" data-task-edit="' + escapeHtml(t.id) + '" aria-label="编辑任务">' +
+        '<svg class="i" viewBox="0 0 24 24"><use href="#ic-pencil"/></svg></button>' +
+        '<button class="icon-mini" data-task-del="' + escapeHtml(t.id) + '" aria-label="删除任务">' +
+        '<svg class="i" viewBox="0 0 24 24"><use href="#ic-trash"/></svg></button>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* ---------- 我的页：统计数字 ---------- */
+  function renderMine() {
+    setText('mineName', state.name);
+    setText('mineAvatar', String(state.name).charAt(0) || '轻');
+    setText('mineWaterDays', state.waterDays);
+    setText('mineRecords', state.logs.length);
+    setText('greetSub', greetWord() + '，' + state.name);
+  }
+
+  /* ---------- 记录页：列表渲染（左滑可删除） ---------- */
+  function logIcon(it) {
+    if (it.kind === 'photo') { return 'ic-camera'; }
+    if (it.kind === 'water') { return 'ic-drop'; }
+    if (it.kind === 'sport') { return 'ic-dumbbell'; }
+    if (it.kind === 'weight') { return 'ic-scale'; }
+    if (it.kind === 'meal') { return 'ic-bowl'; }
+    return 'ic-note';
+  }
+
+  function renderLogs() {
+    var list = $('#recordList');
+    if (!list) { return; }
+    setText('recordCount', state.logs.length + ' 条');
+    setText('mineRecords', state.logs.length);
+    if (!state.logs.length) {
+      list.innerHTML = '<p class="empty">今天还没有记录，拍张照片或点上面的快捷按钮就能记一条</p>';
+      return;
+    }
+    list.innerHTML = state.logs.map(function (it) {
+      var head = it.thumb
+        ? '<img class="thumb" src="' + it.thumb + '" alt="' + escapeHtml(it.title) + '">'
+        : '<span class="badge"><svg class="i" viewBox="0 0 24 24"><use href="#' + logIcon(it) + '"/></svg></span>';
+      return '<div class="swipe" data-log="' + escapeHtml(it.id) + '">' +
+        '<button class="swipe-del" data-log-del="' + escapeHtml(it.id) + '" aria-label="删除这条记录">' +
+        '<svg class="i" viewBox="0 0 24 24"><use href="#ic-trash"/></svg>删除</button>' +
+        '<div class="swipe-body">' + head +
+        '<div class="txt-wrap"><div class="t">' + escapeHtml(it.title) + '</div>' +
+        '<div class="d">' + escapeHtml(it.time) +
+        (it.kind === 'photo' ? ' · 拍照估算' : ' · 已记录') + '</div></div>' +
+        '<div class="v">' + escapeHtml(it.val) + '</div>' +
+        '</div></div>';
+    }).join('');
+    /* 渲染完成后给每一行挂上左滑手势 */
+    $$('#recordList .swipe').forEach(function (row) { bindSwipe(row); });
+  }
+
+  /* ---------- 图表页：近 7 天柱状图（最后一根是今天） ---------- */
+  var WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+
+  function renderBars() {
+    var wrap = $('#barsWrap');
+    if (!wrap) { return; }
+    var data = chartData();
+    var max = Math.max(state.waterGoal, Math.max.apply(null, data), 1) * 1.05;
+    var now = Date.now();
+    wrap.innerHTML = data.map(function (v, i) {
+      var isToday = i === data.length - 1;
+      var d = new Date(now - (data.length - 1 - i) * 86400000);
+      var label = isToday ? '今天' : '周' + WEEK[d.getDay()];
+      return '<div class="col' + (isToday ? ' today' : '') + '" data-ml="' + v + '">' +
+        '<div class="track"><div class="fill" style="height:0"></div></div>' +
+        '<div class="lb">' + label + '</div></div>';
+    }).join('');
+    /* 下一帧再写入高度，才有从 0 长出来的动画 */
+    requestAnimationFrame(function () {
+      $$('#barsWrap .col').forEach(function (col) {
+        var h = clamp(Math.round(Number(col.dataset.ml) / max * 100), 3, 100);
+        var fill = $('.fill', col);
+        if (fill) { fill.style.height = h + '%'; }
+      });
+    });
+    setText('chartAvg', avgWater());
+    setText('chartHitDays', hitDays());
+    setPct('chartGoalBar', Math.round(avgWater() / Math.max(1, state.waterGoal) * 100));
+  }
+
+  /* ==========================================================================
+     抽屉（底部弹窗）：一个通用编辑抽屉 + 一个拍照识别抽屉。
+     表单字段都用同一份描述生成，渲染与取值走同一条路，避免两处不一致。
+     ========================================================================== */
+  var sheetCtx = null;        // 当前抽屉的表单描述
+  var scanTimer = null;
+
+  function fText(label, key, value, placeholder, max) {
+    return { type: 'text', label: label, key: key, value: value, placeholder: placeholder || '', max: max || 20 };
+  }
+  function fNum(label, key, value, unit, min, max, step) {
+    return { type: 'number', label: label, key: key, value: value, unit: unit || '', min: min, max: max, step: step || 1 };
+  }
+  function fSelect(label, key, value, options) {
+    return { type: 'select', label: label, key: key, value: value, options: options };
+  }
+  function fRead(label, value) {
+    return { type: 'read', label: label, value: value };
+  }
+
+  /* 一行表单：左边标签、右边输入框（可带单位） */
+  function fieldHtml(f) {
+    if (f.type === 'read') {
+      return '<div class="field"><span class="field-label">' + escapeHtml(f.label) + '</span>' +
+        '<span class="field-input"><span class="unit">' + escapeHtml(f.value) + '</span></span></div>';
+    }
+    var id = 'f_' + f.key, control;
+    if (f.type === 'select') {
+      control = '<select class="inp" id="' + id + '">' + f.options.map(function (o) {
+        return '<option value="' + escapeHtml(o[0]) + '"' +
+          (String(o[0]) === String(f.value) ? ' selected' : '') + '>' + escapeHtml(o[1]) + '</option>';
+      }).join('') + '</select>';
+    } else if (f.type === 'text') {
+      control = '<input class="inp" id="' + id + '" type="text" maxlength="' + f.max +
+        '" value="' + escapeHtml(f.value) + '" placeholder="' + escapeHtml(f.placeholder) + '">';
+    } else {
+      control = '<input class="inp" id="' + id + '" type="number" inputmode="decimal" step="' + f.step +
+        '" value="' + escapeHtml(f.value) + '" placeholder="' + escapeHtml(f.placeholder || '') + '">';
+    }
+    return '<div class="field"><label class="field-label" for="' + id + '">' + escapeHtml(f.label) + '</label>' +
+      '<span class="field-input">' + control +
+      (f.unit ? '<span class="unit">' + escapeHtml(f.unit) + '</span>' : '') + '</span></div>';
+  }
+
+  /* 打开通用编辑抽屉 */
+  function openEditSheet(cfg) {
+    sheetCtx = cfg;
+    setText('sheetTitle', cfg.title);
+    setText('sheetDesc', cfg.desc || '');
+    var box = $('#sheetBody');
+    if (box) {
+      box.innerHTML = (cfg.fields || []).map(fieldHtml).join('') +
+        (cfg.rows || []).map(function (r) {
+          return '<div class="kv"><span class="k">' + escapeHtml(r[0]) + '</span>' +
+            '<span class="v">' + escapeHtml(r[1]) + '</span></div>';
+        }).join('') + (cfg.extraHtml || '');
+    }
+    setText('sheetOk', cfg.okText || '保存');
+    showSheet('#sheet');
+  }
+
+  /* 读取抽屉里的值：数字 / 文字都校验，只要有一项不合法就提示并停住 */
+  function submitSheet() {
+    if (!sheetCtx) { return; }
+    var cfg = sheetCtx, fields = cfg.fields || [], out = {}, i, f, el;
+    for (i = 0; i < fields.length; i++) {
+      f = fields[i];
+      if (f.type === 'read') { continue; }
+      el = document.getElementById('f_' + f.key);
+      if (!el) { continue; }
+      if (f.type === 'number') {
+        var n = num(el.value, f.min, f.max);
+        if (n === null) {
+          toast('「' + f.label + '」请填 ' + f.min + ' – ' + f.max + (f.unit ? ' ' + f.unit : ''));
+          el.focus();
+          return;
+        }
+        out[f.key] = n;
+      } else if (f.type === 'text') {
+        var v = String(el.value).trim();
+        if (!v) {
+          toast('「' + f.label + '」不能为空');
+          el.focus();
+          return;
+        }
+        out[f.key] = v;
+      } else {
+        out[f.key] = el.value;
+      }
+    }
+    sheetCtx = null;
+    if (cfg.onSubmit) { cfg.onSubmit(out); }
+    closeSheet();          /* 保存成功后自动收起抽屉 */
+  }
+
+  /* 打开 / 关闭抽屉：遮罩与抽屉一起动，关掉后清掉滚动位置 */
+  function showSheet(sel) {
+    var mask = $('#mask'), sheet = $(sel);
+    if (!mask || !sheet) { return; }
+    closeAllSheets();
+    mask.classList.add('is-open');
+    sheet.classList.add('is-open');
+    var sc = $('#scroll');
+    if (sc) { sc.style.overflow = 'hidden'; }
+  }
+  function closeAllSheets() {
+    var mask = $('#mask');
+    if (mask) { mask.classList.remove('is-open'); }
+    $$('.sheet').forEach(function (s) { s.classList.remove('is-open'); s.scrollTop = 0; });
+    var sc = $('#scroll');
+    if (sc) { sc.style.overflow = ''; }
+  }
+  function closeSheet() {
+    sheetCtx = null;
+    clearTimeout(scanTimer);
+    closeAllSheets();
+  }
+
+  /* ==========================================================================
+     各功能抽屉：一份字段描述搞定「显示 + 校验 + 保存」
+     ========================================================================== */
+  function openSheet(key) {
+    if (key === 'drink') {
+      openEditSheet({
+        title: '饮水打卡',
+        desc: '今天已喝 ' + state.water + ' ml，目标 ' + state.waterGoal + ' ml，数字可以随时改。',
+        fields: [
+          fNum('今日已喝', 'water', state.water, 'ml', 0, 20000, 50),
+          fNum('每日目标', 'waterGoal', state.waterGoal, 'ml', 200, 6000, 50),
+          fNum('达标天数', 'waterDays', state.waterDays, '天', 0, 3650, 1)
+        ],
+        rows: [['近 7 天日均', avgWater() + ' ml'],
+               ['还需补充', Math.max(0, state.waterGoal - state.water) + ' ml']],
+        onSubmit: function (v) {
+          state.water = Math.round(v.water);
+          state.waterGoal = Math.round(v.waterGoal);
+          state.waterDays = Math.round(v.waterDays);
+          save(); renderAll(); toast('饮水数据已更新');
+        }
+      });
+      return;
+    }
+    if (key === 'weight') {
+      openEditSheet({
+        title: '体重目标',
+        desc: '每周减 0.5 – 0.8 kg 更稳，掉得太快容易反弹。',
+        fields: [
+          fNum('当前体重', 'weight', state.weight, 'kg', 20, 300, 0.1),
+          fNum('起始体重', 'weightStart', state.weightStart, 'kg', 20, 300, 0.1),
+          fNum('目标体重', 'goal', state.goal, 'kg', 20, 300, 0.1)
+        ],
+        rows: [['已减重', lost().toFixed(1) + ' kg'],
+               ['距离目标', Math.max(0, round1(state.weight - state.goal)).toFixed(1) + ' kg']],
+        onSubmit: function (v) {
+          state.weight = round1(v.weight);
+          state.weightStart = round1(v.weightStart);
+          state.goal = round1(v.goal);
+          if (state.weightStart < state.weight) { state.weightStart = state.weight; }
+          pushLog('weight', '体重', state.weight.toFixed(1) + ' kg');
+          save(); renderAll(); toast('体重目标已更新');
+        }
+      });
+      return;
+    }
+    if (key === 'diet') {
+      var fields = [fNum('热量上限', 'kcalGoal', state.kcalGoal, 'kcal', 500, 6000, 50)];
+      MEAL_DEF.forEach(function (m) {
+        fields.push(fNum(m.label, 'kcal_' + m.key, state.meals[m.key].kcal, 'kcal', 0, 3000, 10));
+      });
+      openEditSheet({
+        title: '饮食记录',
+        desc: '今天合计 ' + kcalTotal() + ' kcal（三餐 ' + mealSum() + ' + 拍照识别 ' + photoSum() +
+          '）；三餐的名称在记录页点一下就能改。',
+        fields: fields,
+        rows: [['剩余额度', Math.max(0, state.kcalGoal - kcalTotal()) + ' kcal']],
+        onSubmit: function (v) {
+          state.kcalGoal = Math.round(v.kcalGoal);
+          MEAL_DEF.forEach(function (m) { state.meals[m.key].kcal = Math.round(v['kcal_' + m.key]); });
+          save(); renderAll(); toast('饮食数据已更新');
+        }
+      });
+      return;
+    }
+    if (key === 'posture') {
+      openEditSheet({
+        title: '体态档案',
+        desc: 'BMI 只作参考，腰围与体脂的变化更能说明问题。',
+        fields: [
+          fNum('身高', 'height', state.height, 'cm', 100, 250, 1),
+          fNum('腰围', 'waist', state.waist, 'cm', 40, 200, 0.5),
+          fNum('体脂率', 'fat', state.fat, '%', 3, 60, 0.1)
+        ],
+        rows: [['BMI', bmi().toFixed(1) + '（正常 18.5 – 23.9）']],
+        onSubmit: function (v) {
+          state.height = round1(v.height);
+          state.waist = round1(v.waist);
+          state.fat = round1(v.fat);
+          save(); renderAll(); toast('体态数据已更新');
+        }
+      });
+      return;
+    }
+    if (key === 'sport') {
+      openEditSheet({
+        title: '运动打卡',
+        desc: '快走、跳绳、居家操都算，心率上来并坚持 20 分钟以上最好。',
+        fields: [
+          fNum('今日运动', 'sport', state.sport, '分钟', 0, 600, 5),
+          fNum('本周累计', 'sportWeek', state.sportWeek, '分钟', 0, 3000, 5),
+          fNum('每周目标', 'sportGoal', state.sportGoal, '分钟', 30, 3000, 10)
+        ],
+        rows: [['估算消耗', Math.round(state.sport * 6.5) + ' kcal']],
+        onSubmit: function (v) {
+          state.sport = Math.round(v.sport);
+          state.sportWeek = Math.round(v.sportWeek);
+          state.sportGoal = Math.round(v.sportGoal);
+          save(); renderAll(); toast('运动数据已更新');
+        }
+      });
+      return;
+    }
+    if (key === 'plan') {
+      openEditSheet({
+        title: '减脂方案',
+        desc: '42 天渐进式：前两周调饮食，中间两周加运动，最后两周稳习惯。',
+        fields: [
+          fNum('方案周期', 'cycle', state.cycle, '天', 7, 365, 7),
+          fNum('已坚持', 'days', state.days, '天', 0, 365, 1),
+          fNum('每周减重', 'rate', state.rate, 'kg', 0.1, 2, 0.1)
+        ],
+        rows: [['当前进度', '第 ' + weekNo() + ' 周 / 共 ' + Math.max(1, Math.ceil(state.cycle / 7)) + ' 周'],
+               ['今日任务', planCount().done + ' / ' + planCount().total + ' 项']],
+        onSubmit: function (v) {
+          state.cycle = Math.round(v.cycle);
+          state.days = Math.round(v.days);
+          state.rate = round1(v.rate);
+          save(); renderAll(); toast('方案已更新');
+        }
+      });
+      return;
+    }
+    if (key === 'profile') {
+      openEditSheet({
+        title: '个人资料',
+        desc: '昵称会出现在首页问候语里，坚持天数也可以手动修正。',
+        fields: [
+          fText('昵称', 'name', state.name, '如 小轻', 12),
+          fNum('已坚持', 'days', state.days, '天', 0, 3650, 1),
+          fNum('饮水达标', 'waterDays', state.waterDays, '天', 0, 3650, 1)
+        ],
+        onSubmit: function (v) {
+          state.name = v.name;
+          state.days = Math.round(v.days);
+          state.waterDays = Math.round(v.waterDays);
+          save(); renderAll(); toast('资料已保存');
+        }
+      });
+      return;
+    }
+    if (key === 'log') {
+      openEditSheet({
+        title: '自定义一条记录',
+        desc: '记什么都行：喝汤、加班步数、腰围……写进数值里方便日后回看。',
+        fields: [fText('记录内容', 'title', '', '如 午后散步', 20),
+                 fText('数值', 'val', '', '如 25 分钟 / 300 ml', 12)],
+        okText: '记一笔',
+        onSubmit: function (v) {
+          pushLog('note', v.title, v.val);
+          save(); renderAll();
+          toast('已记录「' + v.title + '」');
+        }
+      });
+      return;
+    }
+    if (key === 'bell') {
+      openEditSheet({
+        title: '消息提醒',
+        desc: '演示用的提醒列表；顺手把饮水目标改成更适合自己的数值。',
+        fields: [fNum('每日饮水目标', 'waterGoal', state.waterGoal, 'ml', 200, 6000, 50)],
+        rows: [['08:00', '今天记得先喝一杯温水'],
+               ['10:00', '上午饮水 500 ml 还没完成'],
+               ['18:30', '有氧快走 30 分钟时间到了'],
+               ['21:30', '睡前拉伸 10 分钟']],
+        onSubmit: function (v) {
+          state.waterGoal = Math.round(v.waterGoal);
+          save(); renderAll(); toast('提醒与目标已更新');
+        }
+      });
+      return;
+    }
+
+  }
+
+  /* ---------- 统一渲染：任何改动都走这一支，保证各页面数字一致 ---------- */
+  function renderAll() {
+    renderWater(); renderWeight(); renderDiet(); renderMeals(); renderPosture(); renderSport();
+    renderPlan(); renderTasks(); renderLogs(); renderBars(); renderMine();
+  }
+
+  /* ---------- 时间与问候 ---------- */
+  function tickClock() { setText('sbTime', nowTime()); }
+  function greetWord() {
+    var h = new Date().getHours();
+    return h < 5 ? '凌晨好' : h < 11 ? '早上好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好';
+  }
+
+  /* ---------- 我的页：数据管理 ---------- */
+  function saveAllSettings() {
+    save();
+    toast('设置已保存到本机浏览器');
+  }
+
+  function restoreDefaults() {
+    if (!window.confirm('恢复默认目标？已记录的内容会保留。')) { return; }
+    ['waterGoal', 'kcalGoal', 'weight', 'weightStart', 'goal', 'height', 'waist',
+      'fat', 'sportGoal', 'cycle', 'rate'].forEach(function (k) { state[k] = DEFAULTS[k]; });
+    state.meals = {};
+    normalize(state);
+    save(); renderAll();
+    toast('目标已恢复默认');
+  }
+
+  function resetAll() {
+    if (!window.confirm('确定清空全部数据并恢复默认吗？')) { return; }
+    try { localStorage.removeItem(KEY); } catch (err) { /* 忽略 */ }
+    state = load();
+    renderAll();
+    toast('已清空，恢复默认数据');
+  }
+
+  /* ---------- 交互动作：记录与饮水 ---------- */
+  function pushLog(kind, title, val, kcal, thumb) {
+    var it = { id: uid(), kind: kind, title: title, val: val, time: nowTime() };
+    if (kcal) { it.kcal = Math.round(kcal); }
+    if (thumb) { it.thumb = thumb; }
+    state.logs.unshift(it);
+    if (state.logs.length > 40) { state.logs.length = 40; }
+    return it;
+  }
+
+  function addWater(ml, inputEl) {
+    if (!ml) { return; }
+    state.water = Math.max(0, state.water + ml);
+    if (ml > 0) { pushLog('water', '饮水', ml + ' ml'); }
+    if (inputEl) { inputEl.value = ''; }
+    save(); renderAll();
+    if (ml < 0) {
+      toast('已撤回 ' + Math.abs(ml) + ' ml');
+    } else {
+      toast(state.water >= state.waterGoal
+        ? '目标达成，已经 ' + state.water + ' ml 了'
+        : '已记 ' + ml + ' ml，还差 ' + Math.max(0, state.waterGoal - state.water) + ' ml');
+    }
+  }
+
+  /* 自定义饮水量：只接受 1 – 3000 ml */
+  function addWaterFromInput() {
+    var input = $('#waterInput');
+    var ml = num(input ? input.value : '', 1, 3000);
+    if (ml === null) {
+      toast('请填写 1 – 3000 ml 的饮水量');
+      if (input) { input.focus(); }
+      return;
+    }
+    addWater(Math.round(ml), input);
+  }
+
+  function resetWater() {
+    if (!window.confirm('把今天的水量清零？')) { return; }
+    state.water = 0;
+    save(); renderAll();
+    toast('今日水量已清零');
+  }
+
+  function addSport(min) {
+    if (!min) { return; }
+    state.sport = Math.max(0, state.sport + min);
+    state.sportWeek = Math.max(0, state.sportWeek + min);
+    pushLog('sport', '运动', min + ' 分钟');
+    save(); renderAll();
+    toast('已记 ' + min + ' 分钟运动');
+  }
+
+  /* ---------- 交互动作：计划任务（增 / 改 / 删 / 勾） ---------- */
+  function findTask(id) {
+    return state.tasks.filter(function (t) { return String(t.id) === String(id); })[0];
+  }
+
+  function addTask(name) {
+    var v = String(name || '').trim();
+    if (!v) { toast('先写一条任务内容'); return false; }
+    if (state.tasks.length >= 20) { toast('任务最多 20 条，先删几条吧'); return false; }
+    state.tasks.push({ id: uid(), name: v, note: nowTime() + ' · 新添加', done: false });
+    save(); renderAll();
+    toast('已添加任务「' + v + '」');
+    return true;
+  }
+
+  function toggleTask(id) {
+    var t = findTask(id);
+    if (!t) { return; }
+    t.done = !t.done;
+    save(); renderAll();
+    toast(t.done ? '「' + t.name + '」已完成' : '已取消「' + t.name + '」');
+  }
+
+  function delTask(id) {
+    var t = findTask(id);
+    if (!t) { return; }
+    if (!window.confirm('删除任务「' + t.name + '」？')) { return; }
+    state.tasks = state.tasks.filter(function (x) { return String(x.id) !== String(id); });
+    save(); renderAll();
+    closeSheet();
+    toast('已删除任务');
+  }
+
+  function resetTasks() {
+    if (!window.confirm('把所有任务重置为未完成？')) { return; }
+    state.tasks.forEach(function (t) { t.done = false; });
+    save(); renderAll();
+    toast('任务已重置为未完成');
+  }
+
+  function openTaskSheet(id) {
+    var t = findTask(id);
+    if (!t) { return; }
+    openEditSheet({
+      title: '编辑任务',
+      desc: '名称与备注都能改；下面的按钮会直接删除这条任务。',
+      fields: [fText('任务名称', 'name', t.name, '如 晚饭后散步 20 分钟', 24),
+               fText('时间 / 备注', 'note', t.note, '如 19:30 · 慢走', 30)],
+      extraHtml: '<button class="btn-ghost" data-task-del="' + escapeHtml(t.id) + '">删除这条任务</button>',
+      onSubmit: function (v) {
+        t.name = v.name;
+        t.note = v.note;
+        save(); renderAll(); toast('任务已更新');
+      }
+    });
+  }
+  /* ---------- 交互动作：三餐（内容与热量都能自己填） ---------- */
+  function mealDef(key) {
+    return MEAL_DEF.filter(function (m) { return m.key === key; })[0] || MEAL_DEF[0];
+  }
+
+  function openMealSheet(key) {
+    var def = mealDef(key);
+    var cur = state.meals[def.key];
+    openEditSheet({
+      title: def.label + '记录',
+      desc: '内容和热量都能自己填，保存后首页「今日摄入」立刻更新。',
+      fields: [fText('吃了什么', 'name', cur.name, '如 杂粮饭 + 清蒸鱼', 24),
+               fNum('热量', 'kcal', cur.kcal, 'kcal', 0, 3000, 10)],
+      rows: [['今日合计', kcalTotal() + ' kcal']],
+      onSubmit: function (v) {
+        cur.name = v.name;
+        cur.kcal = Math.round(v.kcal);
+        save(); renderAll();
+        toast(def.label + '已保存 ' + cur.kcal + ' kcal');
+      }
+    });
+  }
+
+  /* ---------- 交互动作：删除一条记录（左滑到底或点删除按钮） ---------- */
+  function deleteLog(id) {
+    var it = state.logs.filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!it) { return; }
+    state.logs = state.logs.filter(function (x) { return String(x.id) !== String(id); });
+    save();
+    openRow = null;
+    var row = $('.swipe[data-log="' + id + '"]');
+    if (row) {
+      row.classList.add('removing');
+      setTimeout(renderAll, 220);      /* 等滑出动画放完再重绘 */
+    } else {
+      renderAll();
+    }
+    toast('已删除「' + it.title + '」' + (it.kcal ? '，热量一并扣掉' : ''));
+  }
+
+  /* ---------- 左滑删除：pointer 事件，桌面拖拽与真机触摸通用 ---------- */
+  function bindSwipe(row) {
+    var body = $('.swipe-body', row);
+    if (!body) { return; }
+    var startX = 0, startY = 0, base = 0, dx = 0, active = false, locked = false;
+
+    function setX(v, animate) {
+      body.style.transition = animate ? 'transform .24s cubic-bezier(.22,.9,.32,1.2)' : 'none';
+      body.style.transform = v ? 'translateX(' + v + 'px)' : '';
+    }
+    body.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) { return; }
+      if (openRow && openRow !== row) { closeOpenRow(); }
+      startX = e.clientX;
+      startY = e.clientY;
+      dx = base;                        /* 已经拉开的行，从当前位置继续拖 */
+      active = true;
+      locked = false;
+    });
+    body.addEventListener('pointermove', function (e) {
+      if (!active) { return; }
+      var mx = e.clientX - startX, my = e.clientY - startY;
+      if (!locked) {
+        if (Math.abs(mx) < 8) { return; }
+        if (Math.abs(mx) < Math.abs(my)) { active = false; return; }   /* 竖向滑动还给页面滚动 */
+        locked = true;
+      }
+      dx = clamp(mx + base, -132, 0);
+      setX(dx, false);
+    });
+    function finish() {
+      if (!active && !locked) { return; }
+      active = false;
+      if (!locked) { return; }
+      locked = false;
+      if (dx < -118) { deleteLog(row.dataset.log); return; }   /* 拉得够远 → 直接删除 */
+      if (dx < -40) {
+        base = -88;
+        setX(base, true);
+        openRow = row;
+      } else {
+        base = 0;
+        setX(0, true);
+        if (openRow === row) { openRow = null; }
+      }
+    }
+    body.addEventListener('pointerup', finish);
+    body.addEventListener('pointercancel', function () {
+      active = false;
+      locked = false;
+      base = 0;
+      setX(0, true);
+    });
+  }
+
+  function closeOpenRow() {
+    if (!openRow) { return; }
+    var body = $('.swipe-body', openRow);
+    if (body) {
+      body.style.transition = 'transform .24s ease';
+      body.style.transform = '';
+    }
+    openRow = null;
+  }
+
+  /* ==========================================================================
+     拍照估算热量：照片只在本机处理，压缩成缩略图后存起来，不消耗流量。
+     识别是「按画面主色 + 亮度在参考库里挑一条」的前端模拟，结果随时可手动改。
+     ========================================================================== */
+  var photoCtx = { thumb: '' };
+
+  function analyzePhoto(dataUrl, done) {
+    var img = new Image();
+    img.onload = function () {
+      var max = 720;
+      var w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+      var scale = Math.min(1, max / Math.max(w, h, 1));
+      var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+      var score = 0.5;
+      var cv = document.createElement('canvas');
+      cv.width = cw;
+      cv.height = ch;
+      cv.getContext('2d').drawImage(img, 0, 0, cw, ch);
+      try {
+        var sm = document.createElement('canvas');
+        sm.width = 12;
+        sm.height = 12;
+        var sctx = sm.getContext('2d');
+        sctx.drawImage(img, 0, 0, 12, 12);
+        var px = sctx.getImageData(0, 0, 12, 12).data, i, r = 0, g = 0, b = 0;
+        for (i = 0; i < px.length; i += 4) { r += px[i]; g += px[i + 1]; b += px[i + 2]; }
+        var n = px.length / 4;
+        r /= n; g /= n; b /= n;
+        var warm = (r - b + 255) / 510;          /* 偏红 → 更像肉 / 面食 */
+        var light = (r + g + b) / (3 * 255);     /* 越亮 → 越像沙拉 / 粥 */
+        score = clamp(warm * 0.65 + light * 0.35, 0, 0.999);
+        if (w * h > 1600000) { score = clamp(score - 0.05, 0, 0.999); }
+      } catch (err) { /* 取不到像素就用中间值兜底 */ }
+      done(cv.toDataURL('image/jpeg', 0.72), score);
+    };
+    img.onerror = function () { done('', 0.5); };
+    img.src = dataUrl;
+  }
+
+  function guessFood(score) {
+    var idx = Math.min(FOOD_TABLE.length - 1, Math.floor(score * FOOD_TABLE.length));
+    return FOOD_TABLE[idx];
+  }
+
+  function renderPhotoQuick() {
+    var box = $('#photoQuick');
+    if (!box) { return; }
+    box.innerHTML = [300, 450, 600, 800].map(function (n) {
+      return '<button class="mini" data-kcal="' + n + '">' + n + ' kcal</button>';
+    }).join('');
+  }
+
+  function handlePhotoFile(file) {
+    if (!file) { return; }
+    if (!/^image\//.test(file.type || '')) { toast('请选择图片文件'); return; }
+    if (file.size > 12 * 1024 * 1024) { toast('图片太大了，换一张小一点的'); return; }
+    var reader = new FileReader();
+    reader.onload = function () { openPhotoSheet(String(reader.result)); };
+    reader.onerror = function () { toast('照片读取失败，再试一次'); };
+    reader.readAsDataURL(file);
+  }
+
+  function openPhotoSheet(dataUrl) {
+    analyzePhoto(dataUrl, function (thumb, score) {
+      photoCtx.thumb = thumb;
+      var img = $('#photoPreview');
+      if (img) { img.src = thumb || dataUrl; }
+      var guess = guessFood(score);
+      var bar = $('#scanBar');
+      if (bar) { bar.hidden = false; }
+      setText('scanText', '正在识别食材…');
+      setText('photoGuess', '识别中…');
+      var nameEl = $('#photoName'), kcalEl = $('#photoKcal'), mealEl = $('#photoMeal');
+      if (nameEl) { nameEl.value = ''; }
+      if (kcalEl) { kcalEl.value = ''; }
+      if (mealEl) { mealEl.selectedIndex = 1; }
+      renderPhotoQuick();
+      showSheet('#photoSheet');
+      clearTimeout(scanTimer);
+      scanTimer = setTimeout(function () {
+        if (bar) { bar.hidden = true; }
+        setText('photoGuess', '像「' + guess.name + '」· 约 ' + guess.kcal + ' kcal');
+        if (nameEl) { nameEl.value = guess.name; }
+        if (kcalEl) { kcalEl.value = guess.kcal; }
+        toast('识别完成，热量可以自己改');
+      }, 1100);
+    });
+  }
+
+  function savePhoto() {
+    var nameEl = $('#photoName'), kcalEl = $('#photoKcal'), mealEl = $('#photoMeal');
+    var name = nameEl ? String(nameEl.value).trim() : '';
+    var kcal = num(kcalEl ? kcalEl.value : '', 1, 3000);
+    var label = mealDef(mealEl ? mealEl.value : 'lunch').label;
+    if (!name) { toast('给这道菜起个名字吧'); if (nameEl) { nameEl.focus(); } return; }
+    if (kcal === null) { toast('热量请填 1 – 3000 kcal'); if (kcalEl) { kcalEl.focus(); } return; }
+    pushLog('photo', label + '：' + name, Math.round(kcal) + ' kcal', Math.round(kcal), photoCtx.thumb);
+    photoCtx.thumb = '';
+    save(); renderAll(); closeSheet();
+    toast('已记入' + label + ' ' + Math.round(kcal) + ' kcal');
+  }
+
+
+  /* ---------- Tab 切换：只切面板与高亮，滚动位置回到顶部 ---------- */
+  function switchTab(name) {
+    $$('.panel').forEach(function (p) { p.classList.toggle('is-active', p.id === 'panel-' + name); });
+    $$('#tabbar .tab').forEach(function (b) { b.classList.toggle('is-active', b.dataset.tab === name); });
+    var sc = $('#scroll');
+    if (sc) { sc.scrollTop = 0; }
+    closeOpenRow();
+  }
+
+  /* ---------- 事件：统一委托，真机触摸与桌面预览点击都可用 ---------- */
+  function onClick(e) {
+    var el, input, tEl, kEl;
+    /* --- 抽屉：先处理关闭 / 保存，避免误触到下面的卡片 --- */
+    if (e.target.closest('#mask') || e.target.closest('#sheetClose') || e.target.closest('#sheetCancel')) {
+      closeSheet(); return;
+    }
+    if (e.target.closest('#sheetOk')) { submitSheet(); return; }
+    if (e.target.closest('#photoClose') || e.target.closest('#photoCancel')) { closeSheet(); return; }
+    if (e.target.closest('#photoSave')) { savePhoto(); return; }
+    if ((el = e.target.closest('[data-kcal]'))) {
+      kEl = $('#photoKcal');
+      if (kEl) { kEl.value = el.dataset.kcal; }
+      return;
+    }
+    /* --- 记录页：拍照 / 三餐 / 自定义记录 --- */
+    if ((el = e.target.closest('[data-log-del]'))) { deleteLog(el.dataset.logDel); return; }
+    if ((el = e.target.closest('[data-meal]'))) { openMealSheet(el.dataset.meal); return; }
+    if (e.target.closest('#cameraBtn') || e.target.closest('#albumBtn')) {
+      input = $('#photoInput');
+      if (!input) { return; }
+      /* 拍照走系统相机，相册则不加 capture */
+      if (e.target.closest('#cameraBtn')) { input.setAttribute('capture', 'environment'); }
+      else { input.removeAttribute('capture'); }
+      input.value = '';
+      input.click();
+      return;
+    }
+    if (e.target.closest('[data-log-add]')) { openSheet('log'); return; }
+    if ((el = e.target.closest('[data-quick-water]'))) { addWater(parseInt(el.dataset.quickWater, 10)); return; }
+    if ((el = e.target.closest('[data-quick-sport]'))) { addSport(parseInt(el.dataset.quickSport, 10)); return; }
+    /* --- 首页饮水 --- */
+    if ((el = e.target.closest('[data-water]'))) { addWater(parseInt(el.dataset.water, 10)); return; }
+    if (e.target.closest('[data-water-reset]')) { resetWater(); return; }
+    if (e.target.closest('#waterAddBtn')) { addWaterFromInput(); return; }
+    /* --- 计划页 --- */
+    if (e.target.closest('#taskAddBtn')) {
+      tEl = $('#taskInput');
+      if (addTask(tEl ? tEl.value : '') && tEl) { tEl.value = ''; }
+      return;
+    }
+    if ((el = e.target.closest('[data-task-toggle]'))) { toggleTask(el.dataset.taskToggle); return; }
+    if ((el = e.target.closest('[data-task-edit]'))) { openTaskSheet(el.dataset.taskEdit); return; }
+    if ((el = e.target.closest('[data-task-del]'))) { delTask(el.dataset.taskDel); return; }
+    if (e.target.closest('[data-plan-reset]')) { resetTasks(); return; }
+    /* --- 通用：卡片 / 列表项打开抽屉，也能直接跳到某个 Tab --- */
+    if ((el = e.target.closest('[data-q]'))) { openSheet(el.dataset.q); return; }
+    if ((el = e.target.closest('[data-goto]'))) { switchTab(el.dataset.goto); return; }
+    if ((el = e.target.closest('.tab[data-tab]'))) { switchTab(el.dataset.tab); return; }
+    if (e.target.closest('#bellBtn')) { openSheet('bell'); return; }
+    /* --- 我的页 --- */
+    if (e.target.closest('#saveBtn')) { saveAllSettings(); return; }
+    if (e.target.closest('#restoreBtn')) { restoreDefaults(); return; }
+    if (e.target.closest('#resetBtn')) { resetAll(); return; }
+    /* --- 点空白处，把左滑打开的那一行收回去 --- */
+    if (openRow && !e.target.closest('.swipe')) { closeOpenRow(); }
+  }
+
+  /* ---------- 初始化：渲染一次 + 挂上全局事件 ---------- */
+  function init() {
+    renderAll();
+    tickClock();
+    setInterval(tickClock, 30000);
+
+    /* 拍照 / 相册选择完成后直接进识别流程 */
+    var file = $('#photoInput');
+    if (file) {
+      file.addEventListener('change', function () {
+        handlePhotoFile(this.files && this.files[0]);
+      });
+    }
+    document.addEventListener('click', onClick);
+    document.addEventListener('keydown', function (e) {
+      /* 回车 = 提交当前输入框，Esc = 关掉抽屉 */
+      if (e.key === 'Enter' && e.target) {
+        if (e.target.id === 'waterInput') { addWaterFromInput(); return; }
+        if (e.target.id === 'taskInput') {
+          if (addTask(e.target.value)) { e.target.value = ''; }
+          return;
+        }
+      }
+      if (e.key === 'Escape' || e.keyCode === 27) { closeSheet(); closeOpenRow(); }
+    });
+    /* 真机上防止长按拖动图片 / 文字 */
+    $$('.list').forEach(function (l) {
+      l.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</div><!-- /.phone -->
+</body>
+</html>
+
